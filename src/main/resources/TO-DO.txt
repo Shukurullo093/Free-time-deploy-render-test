@@ -1,10 +1,11 @@
-    upload user image
+    -upload user image
+    -view image
     save phone
     update user info
     -create user & user image entity
     -register
     -email verification
     -login
-    test api with postman
-    security & jwt
-    test api with ngrok & postman
+    -test api with postman
+    -security & jwt
+    -test api with ngrok & postman

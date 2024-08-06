@@ -57,8 +57,22 @@ public class AuthServiceImpl implements AuthService {
             }
             userRepository.save(users);
             return new ApiResponse("Foydalanuvchi muvaffaqqiyatli ro'yhatdan o'tdi", HttpStatus.CREATED);
+        } else {
+            Users users = usersOptional.get();
+            if (!users.isEnabled() && users.getEmailCode() != null) {
+                //  if before registered but didn't verify email, will send otp again
+                String otp = generateOTP();
+                users.setEmailCode(otp);
+                try {
+                    sendVerificationCode(registerDto.getEmail(), otp);
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
+                userRepository.save(users);
+                return new ApiResponse("Emailga tasdilash kodi jo'natildi", HttpStatus.OK);
+            }
+            return new ApiResponse("Bu email allaqachon ro'yhatdan o'tgan", HttpStatus.CONFLICT);
         }
-        return new ApiResponse("Bu email allaqachon ro'yhatdan o'tgan", HttpStatus.CONFLICT);
     }
 
     @Override
@@ -76,11 +90,11 @@ public class AuthServiceImpl implements AuthService {
                 var user = userRepository.findByEmail(users.getEmail())
                         .orElseThrow();
                 var jwtToken = jwtService.generateToken(user);
-                UserDto userDto=new UserDto(
+                UserDto userDto = new UserDto(
                         user.getFirstName(),
                         users.getLastName(),
                         user.getEmail(),
-                        "",
+                        null,
                         jwtToken
                 );
                 return new ApiResponse("Email tasdiqlandi", HttpStatus.OK, userDto);
@@ -93,9 +107,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiResponse login(LoginDto loginDto) {
         Optional<Users> usersOptional = userRepository.findByEmail(loginDto.getEmail());
-        if (usersOptional.isPresent()){
+        if (usersOptional.isPresent()) {
             Users users = usersOptional.get();
-            if (!users.isEnabled() && users.getEmailCode()!=null){
+            if (!users.isEnabled() && users.getEmailCode() != null) {
                 String otp = generateOTP();
                 users.setEmailCode(otp);
                 try {
@@ -106,15 +120,17 @@ public class AuthServiceImpl implements AuthService {
                 userRepository.save(users);
                 return new ApiResponse("Email tasdiqlanmagan, Emailga tasdiqlash kodi yuborildi", HttpStatus.FORBIDDEN);
             }
-            if (passwordEncoder.matches(loginDto.getPassword(), users.getPassword())){
+            if (passwordEncoder.matches(loginDto.getPassword(), users.getPassword())) {
                 var user = userRepository.findByEmail(users.getEmail())
                         .orElseThrow();
                 var jwtToken = jwtService.generateToken(user);
-                UserDto userDto=new UserDto(
+
+                String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + user.getImage().getHashId() : null;
+                UserDto userDto = new UserDto(
                         user.getFirstName(),
                         users.getLastName(),
                         user.getEmail(),
-                        "",
+                        avatarLink,
                         jwtToken
                 );
                 return new ApiResponse("Muvaffaqqiyatli tizimga kirdingiz", HttpStatus.OK, userDto);
@@ -153,7 +169,7 @@ public class AuthServiceImpl implements AuthService {
 */
     }
 
-    private static String generateOTP(){
+    private static String generateOTP() {
         Random random = new Random();
         String characters = "abcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder otp = new StringBuilder();
@@ -162,3 +178,5 @@ public class AuthServiceImpl implements AuthService {
         return otp.toString();
     }
 }
+
+//  https://www.codejava.net/frameworks/spring-boot/spring-security-limit-login-attempts-example

@@ -26,18 +26,24 @@ public class UserRestServiceImpl implements UserRestService {
     public ApiResponse uploadImage(MultipartFile image, String email) throws IOException {
         if (!Objects.requireNonNull(image.getContentType()).split("/")[0].equals("image")) // only images, image/*
             return new ApiResponse("File formati xato", HttpStatus.BAD_REQUEST);
-        UserImage usersImage = new UserImage();
-        usersImage.setName(image.getOriginalFilename());
-        usersImage.setExtension(getExtension(image.getOriginalFilename()));
-        String encodedString = Base64.getEncoder().encodeToString(Objects.requireNonNull(image.getOriginalFilename()).getBytes());
-        usersImage.setHashId(encodedString);
-        usersImage.setFileSize(image.getSize());
-        usersImage.setContentType(image.getContentType());
-        usersImage.setImageByte(image.getBytes());
-        UserImage savedImage = userImageRepository.save(usersImage);
         Optional<Users> usersOptional = userRepository.findByEmail(email);
         if (usersOptional.isPresent()) {
             Users users = usersOptional.get();
+            UserImage usersImage;
+            if (users.getImage() != null) {
+                Optional<UserImage> imageOptional = userImageRepository.findById(users.getImage().getId());
+                usersImage = imageOptional.orElseGet(UserImage::new);
+            } else usersImage = new UserImage();
+
+            usersImage.setName(image.getOriginalFilename());
+            usersImage.setExtension(getExtension(image.getOriginalFilename()));
+            String encodedString = Base64.getEncoder().encodeToString(Objects.requireNonNull(image.getOriginalFilename()).getBytes());
+            usersImage.setHashId(encodedString.substring(0, encodedString.length() - 2));
+            usersImage.setFileSize(image.getSize());
+            usersImage.setContentType(image.getContentType());
+            usersImage.setImageByte(image.getBytes());
+            UserImage savedImage = userImageRepository.save(usersImage);
+
             users.setImage(savedImage);
             userRepository.save(users);
         }
