@@ -7,10 +7,7 @@ import com.time.demo.dto.VerificationDto;
 import com.time.demo.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -34,6 +31,11 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         ApiResponse login = authService.login(loginDto);
         return ResponseEntity.status(login.getHttpStatus()).body(login);
+    }
+
+    @GetMapping("/test")
+    public String test(){
+        return "Project is working...";
     }
 
     //password-reset
