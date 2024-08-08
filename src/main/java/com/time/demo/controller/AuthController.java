@@ -33,10 +33,5 @@ public class AuthController {
         return ResponseEntity.status(login.getHttpStatus()).body(login);
     }
 
-    @GetMapping("/test")
-    public String test(){
-        return "Project is working...";
-    }
-
     //password-reset
 }

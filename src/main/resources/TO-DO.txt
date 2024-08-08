@@ -9,3 +9,6 @@
     -test api with postman
     -security & jwt
     -test api with ngrok & postman
+
+    create contacts entity, repository
+    invite friend

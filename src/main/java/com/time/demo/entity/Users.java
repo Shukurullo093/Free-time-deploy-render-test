@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -24,6 +25,9 @@ public class Users extends AbsMainEntity implements UserDetails {
 
     @Column(nullable = false, length = 20)
     private String lastName;
+
+    @Column(nullable = false, unique = true, length = 20)   //  only lowercases & numbers
+    private String username;
 
     @Column(unique = true, nullable = false, length = 50)
     private String email;
@@ -41,6 +45,9 @@ public class Users extends AbsMainEntity implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
     private UserImage image;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id")
+    private Set<Contacts> contacts;
 
     @Enumerated(value = EnumType.STRING)
     private Roles role;

@@ -1,8 +1,11 @@
 package com.time.demo.service.impl;
 
 import com.time.demo.dto.ApiResponse;
+import com.time.demo.entity.Contacts;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
+import com.time.demo.entity.enums.InviteStatus;
+import com.time.demo.repository.ContactsRepository;
 import com.time.demo.repository.UserImageRepository;
 import com.time.demo.repository.UserRepository;
 import com.time.demo.service.UserRestService;
@@ -21,6 +24,7 @@ import java.util.Optional;
 public class UserRestServiceImpl implements UserRestService {
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
+    private final ContactsRepository contactsRepository;
 
     @Override
     public ApiResponse uploadImage(MultipartFile image, String email) throws IOException {
@@ -48,6 +52,19 @@ public class UserRestServiceImpl implements UserRestService {
             userRepository.save(users);
         }
         return new ApiResponse("Profil uchun rasm yuklandi", HttpStatus.CREATED);
+    }
+
+    @Override
+    public ApiResponse inviteFriend(String emailOrUsername) {
+        Optional<Users> byUsername = userRepository.findByUsername(emailOrUsername);
+        if (byUsername.isPresent()){
+            Contacts contacts=new Contacts();
+            contacts.setContact(byUsername.get());
+            contacts.setStatus(InviteStatus.WAITING);
+            contactsRepository.save(contacts);
+            return new ApiResponse("Taklif havolasi yuborildi", HttpStatus.OK);
+        }
+        return null;
     }
 
     private String getExtension(String fileName) {

@@ -9,4 +9,6 @@ import java.io.IOException;
 @Service
 public interface UserRestService {
     ApiResponse uploadImage(MultipartFile image, String email) throws IOException;
+
+    ApiResponse inviteFriend(String emailOrUsername);
 }

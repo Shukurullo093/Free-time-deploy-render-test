@@ -4,6 +4,7 @@ import com.time.demo.dto.ApiResponse;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
 import com.time.demo.repository.UserImageRepository;
+import com.time.demo.repository.UserRepository;
 import com.time.demo.security.CurrentUser;
 import com.time.demo.service.UserRestService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class UserRestController {
     private final UserRestService userRestService;
     private final UserImageRepository userImageRepository;
+    private final UserRepository userRepository;
 
     @PostMapping("/upload/image")
     public ApiResponse uploadImage(@RequestParam("image") MultipartFile image, @CurrentUser Users users) throws IOException {
@@ -42,5 +45,17 @@ public class UserRestController {
                 .contentType(MediaType.valueOf(userImage.getContentType()))
                 .contentLength(userImage.getFileSize())
                 .body(byteArrayResource);
+    }
+
+    @PostMapping("/invite-friend")
+    public ResponseEntity<ApiResponse> inviteFriend(@RequestParam("email") String emailOrUsername){
+        ApiResponse invite = userRestService.inviteFriend(emailOrUsername);
+        return ResponseEntity.status(invite.getHttpStatus()).body(invite);
+    }
+
+    //  only test api, it will remove later
+    @GetMapping("/list")
+    public List<Users> getUsersList(){
+        return userRepository.findAll();
     }
 }

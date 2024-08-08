@@ -42,8 +42,8 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/user/upload/image", "user/avatar/**").hasAnyRole(ADMIN.name(), USER.name())
+                        .requestMatchers("/auth/**", "/", "/user/list").permitAll()
+                        .requestMatchers("/user/upload/image", "user/avatar/**", "/user/invite-friend").hasAnyRole(ADMIN.name(), USER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

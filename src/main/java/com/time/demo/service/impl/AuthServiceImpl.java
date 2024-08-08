@@ -35,14 +35,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ApiResponse register(RegisterDto registerDto) {
+        if (!isValidPassword(registerDto.getPassword()))
+            return new ApiResponse("Yaroqsiz parol", HttpStatus.BAD_REQUEST);
+        if (userRepository.existsByUsername(registerDto.getUsername()))
+            return new ApiResponse("Bu foydalanuvchi nomi allaqachon foydalanilgan", HttpStatus.BAD_REQUEST);
+        if (!isValidUsername(registerDto.getUsername()))
+            return new ApiResponse("Yaroqsiz foydalanuvchi nomi", HttpStatus.BAD_REQUEST);
         Optional<Users> usersOptional = userRepository.findByEmail(registerDto.getEmail());
         if (usersOptional.isEmpty()) {
-            if (!isValidPassword(registerDto.getPassword()))
-                return new ApiResponse("Yaroqsiz parol", HttpStatus.BAD_REQUEST);
-
             Users users = new Users();
             users.setFirstName(registerDto.getFirstName());
             users.setLastName(registerDto.getLastName());
+            users.setUsername(registerDto.getUsername());
             users.setRole(Roles.USER);
             users.setEmail(registerDto.getEmail());
             users.setPassword(passwordEncoder.encode(registerDto.getPassword()));
@@ -93,6 +97,7 @@ public class AuthServiceImpl implements AuthService {
                 UserDto userDto = new UserDto(
                         user.getFirstName(),
                         users.getLastName(),
+                        user.getUsername(),
                         user.getEmail(),
                         null,
                         jwtToken
@@ -129,6 +134,7 @@ public class AuthServiceImpl implements AuthService {
                 UserDto userDto = new UserDto(
                         user.getFirstName(),
                         users.getLastName(),
+                        user.getUsername(),
                         user.getEmail(),
                         avatarLink,
                         jwtToken
@@ -153,7 +159,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private static boolean isValidPassword(String pass) {
-        String regExp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,30}$";
+        String regExp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$&*+=])(?=\\S+$).{8,30}$";
 
         Pattern pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(pass);
@@ -167,6 +173,16 @@ public class AuthServiceImpl implements AuthService {
     Hech qanday bo'sh joy (\s) bo'lmasligi kerak (\S+).
     Umumiy uzunlik kamida 8 va ko'pi bilan 30 ta belgi bo'lishi kerak.
 */
+    }
+
+    private static boolean isValidUsername(String username) {
+        // [48-57] ->numbers | [97-122] -> lowercases
+        for (int i = 0; i < username.length(); i++) {
+            int asciiIndex = username.charAt(i);
+            if ((asciiIndex < 48 || (asciiIndex > 57 && asciiIndex < 97) || asciiIndex > 122))
+                return false;
+        }
+        return true;
     }
 
     private static String generateOTP() {
