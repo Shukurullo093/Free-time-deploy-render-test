@@ -42,8 +42,11 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/", "/user/list").permitAll()
-                        .requestMatchers("/user/upload/image", "user/avatar/**", "/user/invite-friend").hasAnyRole(ADMIN.name(), USER.name())
+                        .requestMatchers("/auth/**", "/").permitAll()
+                        .requestMatchers(
+                                "/user/upload/image", "user/avatar/**", "/user/invite-friend-by-username",
+                                "/api/contacts", "/api/dashboard", "/user/send-invitation-letter-to-email")
+                        .hasAnyRole(ADMIN.name(), USER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
@@ -65,4 +68,6 @@ public class SecurityConfiguration {
         mailSender.setJavaMailProperties(javaMailProperties);
         return mailSender;
     }
+
+    //  https://pabasararathnayake.medium.com/spring-boot-application-to-send-emails-using-smtp-protocol-c2616d7edf92
 }

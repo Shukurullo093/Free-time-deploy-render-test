@@ -1,18 +1,36 @@
 package com.time.demo.controller;
 
+import com.time.demo.dto.*;
+import com.time.demo.entity.Contacts;
+import com.time.demo.entity.Users;
+import com.time.demo.repository.ContactsRepository;
+import com.time.demo.security.CurrentUser;
+import com.time.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
+    private final UserService userService;
 
     @GetMapping("/dashboard")
-    public ResponseEntity<?> dashboard(){
-        return ResponseEntity.ok("null");
+    public ResponseEntity<?> dashboard(@CurrentUser Users user) {
+
+        return ResponseEntity.ok("");
+    }
+
+    @GetMapping("/contacts")
+    public Map<String, List<ContactsDto>> getContactsList(@CurrentUser Users user) {
+        return userService.getContactsList(user);
     }
 }

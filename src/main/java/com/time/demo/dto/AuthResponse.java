@@ -8,14 +8,17 @@ import org.springframework.http.HttpStatus;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiResponse {
-
+public class AuthResponse {
     private String message;
     private HttpStatus httpStatus;
-    private Object object;
+    private UserDto userDto;
 
-    public ApiResponse(String message, HttpStatus httpStatus) {
+    public AuthResponse(String message, HttpStatus httpStatus) {
         this.message = message;
         this.httpStatus = httpStatus;
     }
+
+
 }
+
+

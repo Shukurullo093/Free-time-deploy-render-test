@@ -10,5 +10,8 @@
     -security & jwt
     -test api with ngrok & postman
 
-    create contacts entity, repository
+    -create contacts entity, repository
     invite friend
+
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    messageDto.setDate(dateFormat.format(homeMessage.getCreatedDate()));

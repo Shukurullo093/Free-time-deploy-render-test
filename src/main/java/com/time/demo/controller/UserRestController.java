@@ -1,14 +1,14 @@
 package com.time.demo.controller;
 
-import com.time.demo.dto.ApiResponse;
+import com.time.demo.dto.AuthResponse;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
 import com.time.demo.repository.UserImageRepository;
 import com.time.demo.repository.UserRepository;
 import com.time.demo.security.CurrentUser;
 import com.time.demo.service.UserRestService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.buf.UEncoder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +29,7 @@ public class UserRestController {
     private final UserRepository userRepository;
 
     @PostMapping("/upload/image")
-    public ApiResponse uploadImage(@RequestParam("image") MultipartFile image, @CurrentUser Users users) throws IOException {
+    public AuthResponse uploadImage(@RequestParam("image") MultipartFile image, @CurrentUser Users users) throws IOException {
         return userRestService.uploadImage(image, users.getEmail());
     }
 
@@ -47,15 +46,15 @@ public class UserRestController {
                 .body(byteArrayResource);
     }
 
-    @PostMapping("/invite-friend")
-    public ResponseEntity<ApiResponse> inviteFriend(@RequestParam("email") String emailOrUsername){
-        ApiResponse invite = userRestService.inviteFriend(emailOrUsername);
+    @PostMapping("/invite-friend-by-username")
+    public ResponseEntity<AuthResponse> inviteFriendByUsername(@RequestParam("username") String username){
+        AuthResponse invite = userRestService.inviteFriendByUsername(username);
         return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
 
-    //  only test api, it will remove later
-    @GetMapping("/list")
-    public List<Users> getUsersList(){
-        return userRepository.findAll();
+    @PostMapping("/send-invitation-letter-to-email")
+    public ResponseEntity<AuthResponse> sendInvitationLetterToEmail(@RequestParam("email") String email, @CurrentUser Users user) throws MessagingException {
+        AuthResponse invite = userRestService.sendInvitationLetterToEmail(email, user);
+        return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
 }

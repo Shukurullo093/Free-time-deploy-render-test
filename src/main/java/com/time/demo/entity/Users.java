@@ -46,7 +46,7 @@ public class Users extends AbsMainEntity implements UserDetails {
     @JoinColumn(name = "image_id", referencedColumnName = "id")
     private UserImage image;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "createdBy", fetch = FetchType.EAGER)
     private Set<Contacts> contacts;
 
     @Enumerated(value = EnumType.STRING)

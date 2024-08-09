@@ -1,0 +1,5 @@
+* register() -> email not found exception not working
+* ApiResponse.class object type (@JsonProperty)
+
+2024-08-09T21:01:49.382+05:00 ERROR 6608 --- [nio-8080-exec-3] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: com.time.demo.entity.Users.contacts: could not initialize proxy - no Session] with root cause
+https://www.baeldung.com/hibernate-initialize-proxy-exception
