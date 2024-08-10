@@ -1,6 +1,6 @@
 package com.time.demo.service.impl;
 
-import com.time.demo.dto.AuthResponse;
+import com.time.demo.dto.ApiResponse;
 import com.time.demo.dto.UserDto;
 import com.time.demo.entity.Contacts;
 import com.time.demo.entity.UserImage;
@@ -37,9 +37,9 @@ public class UserRestServiceImpl implements UserRestService {
     private String host;
 
     @Override
-    public AuthResponse uploadImage(MultipartFile image, String email) throws IOException {
+    public ApiResponse uploadImage(MultipartFile image, String email) throws IOException {
         if (!Objects.requireNonNull(image.getContentType()).split("/")[0].equals("image")) // only images, image/*
-            return new AuthResponse("File formati xato", HttpStatus.BAD_REQUEST);
+            return new ApiResponse("File formati xato", HttpStatus.BAD_REQUEST);
         Optional<Users> usersOptional = userRepository.findByEmail(email);
         if (usersOptional.isPresent()) {
             Users users = usersOptional.get();
@@ -61,24 +61,24 @@ public class UserRestServiceImpl implements UserRestService {
             users.setImage(savedImage);
             userRepository.save(users);
         }
-        return new AuthResponse("Profil uchun rasm yuklandi", HttpStatus.CREATED);
+        return new ApiResponse("Profil uchun rasm yuklandi", HttpStatus.CREATED);
     }
 
     @Override
-    public AuthResponse inviteFriendByUsername(String username) {
+    public ApiResponse inviteFriendByUsername(String username) {
         Optional<Users> byUsername = userRepository.findByUsername(username);
         if (byUsername.isPresent() && byUsername.get().isEnabled()) {
             Contacts contacts = new Contacts();
             contacts.setContact(byUsername.get());
             contacts.setStatus(InviteStatus.WAITING);
             contactsRepository.save(contacts);
-            return new AuthResponse("Taklif havolasi yuborildi", HttpStatus.OK);
+            return new ApiResponse("Taklif havolasi yuborildi", HttpStatus.OK);
         }
-        return new AuthResponse("Bunday foydalanuvchi nom egasi topilmadi", HttpStatus.BAD_REQUEST);
+        return new ApiResponse("Bunday foydalanuvchi nom egasi topilmadi", HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    public AuthResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException {
+    public ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
         mimeMessage.setContent("<html><body><h1>Taklif havolasi </h1><h3>" + user + " sizni free.time.uz saytiga taklif qilayabdi</h3> <b>Siz saytga a'zo bo'lish orqali quyidagi imkoniyatlarga ega bo'lasiz:</b><ul><li>Kunlik vazifalarni rejalashtirish</li><li>Biznes hamkorlaringiz va do'stlaringiz bilan uchrashuvlar vaqtini belgilash</li></ul></body></html>", "text/html");
@@ -86,7 +86,7 @@ public class UserRestServiceImpl implements UserRestService {
         helper.setFrom(host);
         helper.setSubject("Taklif havolasi");
         mailSender.send(mimeMessage);
-        return new AuthResponse("Emailga taklif havolasi yuborildi", HttpStatus.OK);
+        return new ApiResponse("Emailga taklif havolasi yuborildi", HttpStatus.OK);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.time.demo.controller;
 
-import com.time.demo.dto.AuthResponse;
+import com.time.demo.dto.ApiResponse;
 import com.time.demo.dto.LoginDto;
 import com.time.demo.dto.RegisterDto;
 import com.time.demo.dto.VerificationDto;
@@ -18,19 +18,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) throws MessagingException {
-        AuthResponse register = authService.register(registerDto);
+        ApiResponse register = authService.register(registerDto);
         return ResponseEntity.status(register.getHttpStatus()).body(register);
     }
 
     @PostMapping("/verification")
     public ResponseEntity<?> verification(@RequestBody VerificationDto verificationDto) {
-        AuthResponse verification = authService.verification(verificationDto);
+        ApiResponse verification = authService.verification(verificationDto);
         return ResponseEntity.status(verification.getHttpStatus()).body(verification);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        AuthResponse login = authService.login(loginDto);
+        ApiResponse login = authService.login(loginDto);
         return ResponseEntity.status(login.getHttpStatus()).body(login);
     }
 

@@ -1,6 +1,6 @@
 package com.time.demo.service;
 
-import com.time.demo.dto.AuthResponse;
+import com.time.demo.dto.ApiResponse;
 import com.time.demo.dto.UserDto;
 import com.time.demo.entity.Users;
 import jakarta.mail.MessagingException;
@@ -12,11 +12,11 @@ import java.util.List;
 
 @Service
 public interface UserRestService {
-    AuthResponse uploadImage(MultipartFile image, String email) throws IOException;
+    ApiResponse uploadImage(MultipartFile image, String email) throws IOException;
 
-    AuthResponse inviteFriendByUsername(String username);
+    ApiResponse inviteFriendByUsername(String username);
 
-    AuthResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException;
+    ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException;
 
     List<UserDto> getUsersByUsername(String username);
 }

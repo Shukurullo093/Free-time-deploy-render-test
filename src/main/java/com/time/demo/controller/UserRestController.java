@@ -1,6 +1,6 @@
 package com.time.demo.controller;
 
-import com.time.demo.dto.AuthResponse;
+import com.time.demo.dto.ApiResponse;
 import com.time.demo.dto.UserDto;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
@@ -31,7 +31,7 @@ public class UserRestController {
     private final UserRepository userRepository;
 
     @PostMapping("/upload/image")
-    public AuthResponse uploadImage(@RequestParam("image") MultipartFile image, @CurrentUser Users users) throws IOException {
+    public ApiResponse uploadImage(@RequestParam("image") MultipartFile image, @CurrentUser Users users) throws IOException {
         return userRestService.uploadImage(image, users.getEmail());
     }
 
@@ -55,14 +55,14 @@ public class UserRestController {
 
 
     @PostMapping("/invite-friend-by-username")
-    public ResponseEntity<AuthResponse> inviteFriendByUsername(@RequestParam("username") String username){
-        AuthResponse invite = userRestService.inviteFriendByUsername(username);
+    public ResponseEntity<ApiResponse> inviteFriendByUsername(@RequestParam("username") String username){
+        ApiResponse invite = userRestService.inviteFriendByUsername(username);
         return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
 
     @PostMapping("/send-invitation-letter-to-email")
-    public ResponseEntity<AuthResponse> sendInvitationLetterToEmail(@RequestParam("email") String email, @CurrentUser Users user) throws MessagingException {
-        AuthResponse invite = userRestService.sendInvitationLetterToEmail(email, user);
+    public ResponseEntity<ApiResponse> sendInvitationLetterToEmail(@RequestParam("email") String email, @CurrentUser Users user) throws MessagingException {
+        ApiResponse invite = userRestService.sendInvitationLetterToEmail(email, user);
         return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
 }
