@@ -1,6 +1,7 @@
 package com.time.demo.controller;
 
 import com.time.demo.dto.AuthResponse;
+import com.time.demo.dto.UserDto;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
 import com.time.demo.repository.UserImageRepository;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -45,6 +47,12 @@ public class UserRestController {
                 .contentLength(userImage.getFileSize())
                 .body(byteArrayResource);
     }
+
+    @GetMapping("/get-users-by-username")
+    public List<UserDto> getUsersByUsername(@RequestParam("username") String username){
+        return userRestService.getUsersByUsername(username);
+    }
+
 
     @PostMapping("/invite-friend-by-username")
     public ResponseEntity<AuthResponse> inviteFriendByUsername(@RequestParam("username") String username){

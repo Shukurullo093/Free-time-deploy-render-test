@@ -1,6 +1,7 @@
 package com.time.demo.service.impl;
 
 import com.time.demo.dto.AuthResponse;
+import com.time.demo.dto.UserDto;
 import com.time.demo.entity.Contacts;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
@@ -21,9 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -68,8 +67,8 @@ public class UserRestServiceImpl implements UserRestService {
     @Override
     public AuthResponse inviteFriendByUsername(String username) {
         Optional<Users> byUsername = userRepository.findByUsername(username);
-        if (byUsername.isPresent() && byUsername.get().isEnabled()){
-            Contacts contacts=new Contacts();
+        if (byUsername.isPresent() && byUsername.get().isEnabled()) {
+            Contacts contacts = new Contacts();
             contacts.setContact(byUsername.get());
             contacts.setStatus(InviteStatus.WAITING);
             contactsRepository.save(contacts);
@@ -88,6 +87,26 @@ public class UserRestServiceImpl implements UserRestService {
         helper.setSubject("Taklif havolasi");
         mailSender.send(mimeMessage);
         return new AuthResponse("Emailga taklif havolasi yuborildi", HttpStatus.OK);
+    }
+
+    @Override
+    public List<UserDto> getUsersByUsername(String username) {
+        List<Users> allByUsernameWithQuery = userRepository.findAllByUsernameStartsWith(username);
+//        System.out.println(allByUsernameWithQuery);
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (Users user : allByUsernameWithQuery) {
+            String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + user.getImage().getHashId() : null;
+//            System.out.println(user.getUsername());
+            userDtoList.add(new UserDto(
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    avatarLink,
+                    null
+            ));
+        }
+        return userDtoList;
     }
 
     private String getExtension(String fileName) {
