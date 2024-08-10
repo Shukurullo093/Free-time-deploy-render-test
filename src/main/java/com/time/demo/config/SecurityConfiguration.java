@@ -42,10 +42,11 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/", "/user/get-users-by-username").permitAll()
+                        .requestMatchers("/auth/**", "/").permitAll()
                         .requestMatchers(
                                 "/user/upload/image", "user/avatar/**", "/user/invite-friend-by-username",
-                                "/api/contacts", "/api/dashboard", "/user/send-invitation-letter-to-email")
+                                "/api/contacts", "/api/dashboard", "/user/send-invitation-letter-to-email",
+                                "/user/get-users-by-username", "/user/accept-invitation")
                         .hasAnyRole(ADMIN.name(), USER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

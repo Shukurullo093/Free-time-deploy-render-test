@@ -14,11 +14,11 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface UserRepository extends JpaRepository<Users, Long> {
     Optional<Users> findByEmail(String email);
-    Optional<Users> findByUsername(String username);
-    boolean existsByUsername(String username);
+    Optional<Users> findByUsername1(String username);
+    boolean existsByUsername1(String username);
 
-    @Query(value = "SELECT * FROM users u WHERE u.username LIKE CONCAT('%', :username, '%')", nativeQuery = true)
+    @Query(value = "SELECT * FROM users u WHERE u.username1 LIKE CONCAT('%', :username, '%')", nativeQuery = true)
     List<Users> findAllByUsernameWithQuery(@Param("username") String username);
 
-    List<Users> findAllByUsernameStartsWith(String username);
+    List<Users> findAllByUsername1StartsWith(String username);
 }

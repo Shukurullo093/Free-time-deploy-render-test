@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
             Users contact = contacts.getContact();
             String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + contact.getImage().getHashId() : null;
             contactsDtoList.add(new ContactsDto(
+                    contact.getId(),
                     contact.getFirstName(),
                     contact.getLastName(),
                     contact.getUsername(),

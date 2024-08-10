@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
     public ApiResponse register(RegisterDto registerDto) throws MessagingException {
         if (!isValidPassword(registerDto.getPassword()))
             return new ApiResponse("Yaroqsiz parol", HttpStatus.BAD_REQUEST);
-        if (userRepository.existsByUsername(registerDto.getUsername()))
+        if (userRepository.existsByUsername1(registerDto.getUsername()))
             return new ApiResponse("Bu foydalanuvchi nomi allaqachon foydalanilgan", HttpStatus.BAD_REQUEST);
         if (!isValidUsername(registerDto.getUsername()))
             return new ApiResponse("Yaroqsiz foydalanuvchi nomi", HttpStatus.BAD_REQUEST);
@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
             Users users = new Users();
             users.setFirstName(registerDto.getFirstName());
             users.setLastName(registerDto.getLastName());
-            users.setUsername(registerDto.getUsername());
+            users.setUsername1(registerDto.getUsername());
             users.setRole(Roles.USER);
             users.setEmail(registerDto.getEmail());
             users.setPassword(passwordEncoder.encode(registerDto.getPassword()));
@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
                 UserDto userDto = new UserDto(
                         user.getFirstName(),
                         users.getLastName(),
-                        user.getUsername(),
+                        user.getUsername1(),
                         user.getEmail(),
                         null,
                         jwtToken
@@ -136,7 +136,7 @@ public class AuthServiceImpl implements AuthService {
                 UserDto userDto = new UserDto(
                         user.getFirstName(),
                         users.getLastName(),
-                        user.getUsername(),
+                        user.getUsername1(),
                         user.getEmail(),
                         avatarLink,
                         jwtToken

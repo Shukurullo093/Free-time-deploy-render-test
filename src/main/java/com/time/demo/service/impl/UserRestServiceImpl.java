@@ -66,7 +66,7 @@ public class UserRestServiceImpl implements UserRestService {
 
     @Override
     public ApiResponse inviteFriendByUsername(String username) {
-        Optional<Users> byUsername = userRepository.findByUsername(username);
+        Optional<Users> byUsername = userRepository.findByUsername1(username);
         if (byUsername.isPresent() && byUsername.get().isEnabled()) {
             Contacts contacts = new Contacts();
             contacts.setContact(byUsername.get());
@@ -91,22 +91,37 @@ public class UserRestServiceImpl implements UserRestService {
 
     @Override
     public List<UserDto> getUsersByUsername(String username) {
-        List<Users> allByUsernameWithQuery = userRepository.findAllByUsernameStartsWith(username);
-//        System.out.println(allByUsernameWithQuery);
+        List<Users> allByUsernameWithQuery = userRepository.findAllByUsernameWithQuery(username);
         List<UserDto> userDtoList = new ArrayList<>();
         for (Users user : allByUsernameWithQuery) {
             String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + user.getImage().getHashId() : null;
-//            System.out.println(user.getUsername());
             userDtoList.add(new UserDto(
                     user.getFirstName(),
                     user.getLastName(),
-                    user.getUsername(),
+                    user.getUsername1(),
                     user.getEmail(),
                     avatarLink,
                     null
             ));
         }
         return userDtoList;
+    }
+
+    @Override
+    public ApiResponse acceptInvitation(Long id, String answer, Users user) {
+        Optional<Contacts> contactsOptional = contactsRepository.findById(id);
+        if (contactsOptional.isPresent()) {
+            Contacts contacts = contactsOptional.get();
+            if (contacts.getContact().getId().equals(user.getId())) {
+                contacts.setStatus(InviteStatus.valueOf(answer.toUpperCase()));
+                contactsRepository.save(contacts);
+                String msg = answer.equalsIgnoreCase("accept") ? "Taklif so'rovi qabul qilindi" : "Taklif so'rovi rad etildi";
+                return new ApiResponse(msg, HttpStatus.OK);
+            } else {
+                return new ApiResponse("Sizda bu taklifga javob berishga ruxsat yo'q", HttpStatus.FORBIDDEN);
+            }
+        }
+        return new ApiResponse("Taklif havolasi topilmadi", HttpStatus.NOT_FOUND);
     }
 
     private String getExtension(String fileName) {

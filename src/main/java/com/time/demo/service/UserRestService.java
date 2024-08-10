@@ -19,4 +19,6 @@ public interface UserRestService {
     ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException;
 
     List<UserDto> getUsersByUsername(String username);
+
+    ApiResponse acceptInvitation(Long id, String answer, Users user);
 }

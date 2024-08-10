@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
     @GetMapping("")
-    public String test(){
-        return "Project is working... " + System.getProperty("java.class.path");
+    public String test() {
+        return "<h1>Project is working...</h1>";
     }
 }

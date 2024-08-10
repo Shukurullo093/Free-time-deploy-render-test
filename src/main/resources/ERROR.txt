@@ -1,5 +1,12 @@
 * register() -> email not found exception not working
 * ApiResponse.class object type (@JsonProperty)
 
-2024-08-09T21:01:49.382+05:00 ERROR 6608 --- [nio-8080-exec-3] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: com.time.demo.entity.Users.contacts: could not initialize proxy - no Session] with root cause
+Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: com.time.demo.entity.Users.contacts: could not initialize proxy - no Session] with root cause
 https://www.baeldung.com/hibernate-initialize-proxy-exception
+###
+*   userni chaqirganimda username bilan email bir xil qaytayabdi, lekin bazada ikki xil saqlangan
+(CAUSE:
+UZ: user entityga userdetailsni implement qilganman shunda override qilingan getUsername() metodiga email qaytarganman. override getUsername() metodi bilan @Data ning username @getter & @setterlari bir-biriga mos tushib qolgan.
+EN: As I implement UserDetails to user entity class, its methods implemented including getUsername, as a result conflicted the overridden getUsername() with getUsername of Data annotation, thus getUsername() method of Data annotation didn't work
+SOLUTION: I changed the name of username field to username1, username -> username1 then getUsername() -> getUsername1())
+###

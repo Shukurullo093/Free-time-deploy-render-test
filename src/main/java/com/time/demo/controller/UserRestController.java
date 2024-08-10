@@ -37,25 +37,24 @@ public class UserRestController {
 
     //  must change | -> service impl
     @GetMapping("/avatar/{hashID}")
-    public ResponseEntity<?> viewImage(@PathVariable String hashID){
+    public ResponseEntity<?> viewImage(@PathVariable String hashID) {
         Optional<UserImage> byHashId = userImageRepository.findByHashId(hashID);
         UserImage userImage = byHashId.get();
-        ByteArrayResource byteArrayResource=new ByteArrayResource(userImage.getImageByte());
+        ByteArrayResource byteArrayResource = new ByteArrayResource(userImage.getImageByte());
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; fileName=\""+ URLEncoder.encode(userImage.getName()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; fileName=\"" + URLEncoder.encode(userImage.getName()))
                 .contentType(MediaType.valueOf(userImage.getContentType()))
                 .contentLength(userImage.getFileSize())
                 .body(byteArrayResource);
     }
 
     @GetMapping("/get-users-by-username")
-    public List<UserDto> getUsersByUsername(@RequestParam("username") String username){
+    public List<UserDto> getUsersByUsername(@RequestParam("username") String username) {
         return userRestService.getUsersByUsername(username);
     }
 
-
     @PostMapping("/invite-friend-by-username")
-    public ResponseEntity<ApiResponse> inviteFriendByUsername(@RequestParam("username") String username){
+    public ResponseEntity<ApiResponse> inviteFriendByUsername(@RequestParam("username") String username) {
         ApiResponse invite = userRestService.inviteFriendByUsername(username);
         return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
@@ -63,6 +62,12 @@ public class UserRestController {
     @PostMapping("/send-invitation-letter-to-email")
     public ResponseEntity<ApiResponse> sendInvitationLetterToEmail(@RequestParam("email") String email, @CurrentUser Users user) throws MessagingException {
         ApiResponse invite = userRestService.sendInvitationLetterToEmail(email, user);
+        return ResponseEntity.status(invite.getHttpStatus()).body(invite);
+    }
+
+    @PostMapping("/accept-invitation")
+    public ResponseEntity<ApiResponse> acceptInvitation(@RequestParam("id") Long id, @RequestParam("answer") String answer, @CurrentUser Users user) {
+        ApiResponse invite = userRestService.acceptInvitation(id, answer, user);
         return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
 }
