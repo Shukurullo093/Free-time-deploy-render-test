@@ -1,6 +1,7 @@
 package com.time.demo.repository;
 
 import com.time.demo.entity.Users;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -17,8 +18,8 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     Optional<Users> findByUsername1(String username);
     boolean existsByUsername1(String username);
 
-    @Query(value = "SELECT * FROM users u WHERE u.username1 LIKE CONCAT('%', :username, '%')", nativeQuery = true)
-    List<Users> findAllByUsernameWithQuery(@Param("username") String username);
+    @Query(value = "SELECT * FROM users u WHERE u.username1 LIKE CONCAT('%', :username, '%') ORDER BY u.username", nativeQuery = true)
+    List<Users> findAllByUsernameWithQuery(@Param("username") String username, Pageable pageable);
 
-    List<Users> findAllByUsername1StartsWith(String username);
+//    List<Users> findAllByUsername1Contains(String username, Pageable pageable);
 }

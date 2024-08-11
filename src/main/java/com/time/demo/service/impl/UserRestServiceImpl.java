@@ -15,6 +15,8 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -26,7 +28,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class UserRestServiceImpl implements UserRestService {
+public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
     private final ContactsRepository contactsRepository;
@@ -66,6 +68,9 @@ public class UserRestServiceImpl implements UserRestService {
 
     @Override
     public ApiResponse inviteFriendByUsername(String username) {
+        if (contactsRepository.existsByContactUsername1AndStatus(username, InviteStatus.ACCEPT))
+            return new ApiResponse("Ushbu foydalanuvchi bilan allaqachon bog'langansiz", HttpStatus.OK);
+
         Optional<Users> byUsername = userRepository.findByUsername1(username);
         if (byUsername.isPresent() && byUsername.get().isEnabled()) {
             Contacts contacts = new Contacts();
@@ -81,7 +86,7 @@ public class UserRestServiceImpl implements UserRestService {
     public ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
-        mimeMessage.setContent("<html><body><h1>Taklif havolasi </h1><h3>" + user + " sizni free.time.uz saytiga taklif qilayabdi</h3> <b>Siz saytga a'zo bo'lish orqali quyidagi imkoniyatlarga ega bo'lasiz:</b><ul><li>Kunlik vazifalarni rejalashtirish</li><li>Biznes hamkorlaringiz va do'stlaringiz bilan uchrashuvlar vaqtini belgilash</li></ul></body></html>", "text/html");
+        mimeMessage.setContent("<html><body><h1>Taklif havolasi </h1><h3>" + getUserDtoFromUser(user, null) + " sizni free.time.uz saytiga taklif qilayabdi</h3> <b>Siz saytga a'zo bo'lish orqali quyidagi imkoniyatlarga ega bo'lasiz:</b><ul><li>Kunlik vazifalarni rejalashtirish</li><li>Biznes hamkorlaringiz va do'stlaringiz bilan uchrashuvlar vaqtini belgilash</li></ul></body></html>", "text/html");
         helper.setTo(email);
         helper.setFrom(host);
         helper.setSubject("Taklif havolasi");
@@ -91,20 +96,12 @@ public class UserRestServiceImpl implements UserRestService {
 
     @Override
     public List<UserDto> getUsersByUsername(String username) {
-        List<Users> allByUsernameWithQuery = userRepository.findAllByUsernameWithQuery(username);
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (Users user : allByUsernameWithQuery) {
-            String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + user.getImage().getHashId() : null;
-            userDtoList.add(new UserDto(
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getUsername1(),
-                    user.getEmail(),
-                    avatarLink,
-                    null
-            ));
+        Pageable pageable = PageRequest.of(0, 2);
+        if (username != null) {
+            List<Users> allByUsernameWithQuery = userRepository.findAllByUsernameWithQuery(username, pageable);
+            return getUserDtoListFromUsersList(allByUsernameWithQuery);
         }
-        return userDtoList;
+        return null;
     }
 
     @Override
@@ -129,17 +126,22 @@ public class UserRestServiceImpl implements UserRestService {
         Optional<Users> usersOptional = userRepository.findByEmail(user.getEmail());
         if (usersOptional.isPresent()) {
             Users users = usersOptional.get();
-            String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + user.getImage().getHashId() : null;
-            return new UserDto(
-                    users.getFirstName(),
-                    users.getLastName(),
-                    users.getUsername1(),
-                    users.getEmail(),
-                    avatarLink,
-                    null
-            );
+            return getUserDtoFromUser(users, null);
         }
         return new UserDto();
+    }
+
+    @Override
+    public ApiResponse deleteInvitation(Long id, Users user) {
+        Optional<Contacts> contactsOptional = contactsRepository.findById(id);
+        if (contactsOptional.isPresent()) {
+            Contacts contacts = contactsOptional.get();
+            if (contacts.getCreatedBy().equals(user.getId())) {
+                contactsRepository.deleteById(id);
+                return new ApiResponse("Foydalanuvchi bilan aloqa uzildi", HttpStatus.OK);
+            }
+        }
+        return new ApiResponse("Taklif havolasi topilmadi", HttpStatus.BAD_REQUEST);
     }
 
     private String getExtension(String fileName) {

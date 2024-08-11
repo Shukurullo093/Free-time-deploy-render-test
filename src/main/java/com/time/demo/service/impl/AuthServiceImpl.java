@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl extends AbsGeneral implements AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
@@ -96,15 +96,8 @@ public class AuthServiceImpl implements AuthService {
                 var user = userRepository.findByEmail(users.getEmail())
                         .orElseThrow();
                 var jwtToken = jwtService.generateToken(user);
-                UserDto userDto = new UserDto(
-                        user.getFirstName(),
-                        users.getLastName(),
-                        user.getUsername1(),
-                        user.getEmail(),
-                        null,
-                        jwtToken
-                );
-                return new ApiResponse("Email tasdiqlandi", HttpStatus.OK, userDto);
+
+                return new ApiResponse("Email tasdiqlandi", HttpStatus.OK, getUserDtoFromUser(user, jwtToken));
             } else
                 return new ApiResponse("Tasdiqlash kodi xato", HttpStatus.BAD_REQUEST);
         }
@@ -132,16 +125,7 @@ public class AuthServiceImpl implements AuthService {
                         .orElseThrow();
                 var jwtToken = jwtService.generateToken(user);
 
-                String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + user.getImage().getHashId() : null;
-                UserDto userDto = new UserDto(
-                        user.getFirstName(),
-                        users.getLastName(),
-                        user.getUsername1(),
-                        user.getEmail(),
-                        avatarLink,
-                        jwtToken
-                );
-                return new ApiResponse("Muvaffaqqiyatli tizimga kirdingiz", HttpStatus.OK, userDto);
+                return new ApiResponse("Muvaffaqqiyatli tizimga kirdingiz", HttpStatus.OK, getUserDtoFromUser(user, jwtToken));
             } else {
                 return new ApiResponse("Email yoki Parol xato", HttpStatus.BAD_REQUEST);
             }

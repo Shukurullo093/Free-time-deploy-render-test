@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
                     contact.getId(),
                     contact.getFirstName(),
                     contact.getLastName(),
-                    contact.getUsername(),
+                    contact.getUsername1(),
                     contact.getEmail(),
                     avatarLink,
                     contacts.getStatus()));

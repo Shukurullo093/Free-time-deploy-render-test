@@ -71,6 +71,12 @@ public class UserRestController {
         return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
 
+    @DeleteMapping("/delete/invitation/{id}")
+    public ResponseEntity<ApiResponse> deleteInvitation(@PathVariable Long id, @CurrentUser Users user){
+        ApiResponse delete = userRestService.deleteInvitation(id, user);
+        return ResponseEntity.status(delete.getHttpStatus()).body(delete);
+    }
+
     @GetMapping("/profile-info")
     public UserDto getProfileInfo(@CurrentUser Users user){
         return userRestService.getProfileInfo(user);

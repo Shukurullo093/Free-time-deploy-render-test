@@ -23,4 +23,6 @@ public interface UserRestService {
     ApiResponse acceptInvitation(Long id, String answer, Users user);
 
     UserDto getProfileInfo(Users user);
+
+    ApiResponse deleteInvitation(Long id, Users user);
 }
