@@ -21,4 +21,6 @@ public interface UserRestService {
     List<UserDto> getUsersByUsername(String username);
 
     ApiResponse acceptInvitation(Long id, String answer, Users user);
+
+    UserDto getProfileInfo(Users user);
 }

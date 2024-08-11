@@ -124,6 +124,24 @@ public class UserRestServiceImpl implements UserRestService {
         return new ApiResponse("Taklif havolasi topilmadi", HttpStatus.NOT_FOUND);
     }
 
+    @Override
+    public UserDto getProfileInfo(Users user) {
+        Optional<Users> usersOptional = userRepository.findByEmail(user.getEmail());
+        if (usersOptional.isPresent()) {
+            Users users = usersOptional.get();
+            String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + user.getImage().getHashId() : null;
+            return new UserDto(
+                    users.getFirstName(),
+                    users.getLastName(),
+                    users.getUsername1(),
+                    users.getEmail(),
+                    avatarLink,
+                    null
+            );
+        }
+        return new UserDto();
+    }
+
     private String getExtension(String fileName) {
         String ext = null;
         if (fileName != null && !fileName.isEmpty()) {

@@ -12,8 +12,11 @@
 
     -create contacts entity, repository
     -invite friend (if they are already friend, he cannot send invitation)
-    accept invitation
+    -accept invitation
     delete invitation by owner
+
+    -get user data with token
+
 
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     messageDto.setDate(dateFormat.format(homeMessage.getCreatedDate()));

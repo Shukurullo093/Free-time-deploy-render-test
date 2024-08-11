@@ -46,7 +46,7 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/user/upload/image", "user/avatar/**", "/user/invite-friend-by-username",
                                 "/api/contacts", "/api/dashboard", "/user/send-invitation-letter-to-email",
-                                "/user/get-users-by-username", "/user/accept-invitation")
+                                "/user/get-users-by-username", "/user/accept-invitation", "/user/profile-info")
                         .hasAnyRole(ADMIN.name(), USER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

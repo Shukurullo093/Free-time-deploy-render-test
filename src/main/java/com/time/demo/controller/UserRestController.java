@@ -70,4 +70,9 @@ public class UserRestController {
         ApiResponse invite = userRestService.acceptInvitation(id, answer, user);
         return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
+
+    @GetMapping("/profile-info")
+    public UserDto getProfileInfo(@CurrentUser Users user){
+        return userRestService.getProfileInfo(user);
+    }
 }

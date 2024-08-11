@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, List<ContactsDto>> getContactsList(Users user) {
-        Map<String, List<ContactsDto>> map=new HashMap<>();
+        Map<String, List<ContactsDto>> map = new HashMap<>();
         List<Contacts> allByCreatedBy = contactsRepository.findAllByCreatedBy(user.getId());
         List<ContactsDto> contactsDtoList = new ArrayList<>();
         for (Contacts contacts : allByCreatedBy) {
