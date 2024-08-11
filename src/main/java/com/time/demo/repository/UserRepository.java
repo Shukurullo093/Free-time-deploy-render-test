@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     Optional<Users> findByUsername1(String username);
     boolean existsByUsername1(String username);
 
-    @Query(value = "SELECT * FROM users u WHERE u.username1 LIKE CONCAT('%', :username, '%') ORDER BY u.username", nativeQuery = true)
+    @Query(value = "SELECT * FROM users u WHERE u.username1 LIKE CONCAT('%', :username, '%') ORDER BY u.username1", nativeQuery = true)
     List<Users> findAllByUsernameWithQuery(@Param("username") String username, Pageable pageable);
 
 //    List<Users> findAllByUsername1Contains(String username, Pageable pageable);

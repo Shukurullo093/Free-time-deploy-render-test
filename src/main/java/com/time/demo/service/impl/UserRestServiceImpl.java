@@ -96,7 +96,7 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
 
     @Override
     public List<UserDto> getUsersByUsername(String username) {
-        Pageable pageable = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(0, 5);
         if (username != null) {
             List<Users> allByUsernameWithQuery = userRepository.findAllByUsernameWithQuery(username, pageable);
             return getUserDtoListFromUsersList(allByUsernameWithQuery);
