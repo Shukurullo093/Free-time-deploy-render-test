@@ -15,9 +15,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-
     @Value("${spring.jwt.secret.key}")
-    private static String SECRET_KEY;
+    private String SECRET_KEY;
 
     public String extractUsername(String token) {
 //        return extractClaim(token, Claims::getSubject);
