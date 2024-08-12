@@ -84,9 +84,78 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
 
     @Override
     public ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException {
+        String htmlMsg = "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <style>\n" +
+                "        body{\n" +
+                "            width: 100%;\n" +
+                "        }\n" +
+                "        body,\n" +
+                "        .container{\n" +
+                "            display: flex;\n" +
+                "            flex-direction: column;\n" +
+                "            align-items: center;\n" +
+                "            justify-content: center;\n" +
+                "            font-family: 'Times New Roman', Times, serif;\n" +
+                "            text-align: justify;\n" +
+                "        }\n" +
+                "        .accept{\n" +
+                "            background-color: #eaf2ed; \n" +
+                "            margin: 5px 0 0;\n" +
+                "            padding: 1rem;\n" +
+                "            border-top: 1px solid blueviolet;\n" +
+                "            display: flex;\n" +
+                "            justify-content: center;\n" +
+                "        }\n" +
+                "        a{\n" +
+                "            text-decoration: none;\n" +
+                "            background-color: green;\n" +
+                "            padding: 8px 30px;\n" +
+                "            border-radius: 13px;\n" +
+                "            font-size: 20px;\n" +
+                "            letter-spacing: 2px;\n" +
+                "            color: white;\n" +
+                "        }\n" +
+                "        .footer{\n" +
+                "            background-color: black;\n" +
+                "            text-align: justify;\n" +
+                "            color: white;\n" +
+                "            padding: 10px;\n" +
+                "            font-size: 16px;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div class=\"container\" style=\"width: 550px; border-radius: 5px;\">\n" +
+                "        <img src=\"https://static.vecteezy.com/system/resources/previews/021/480/975/original/you-re-invited-calligraphy-text-with-elegant-golden-frame-hand-drawn-style-lettering-design-for-greeting-cards-and-invitations-vector.jpg\" width=\"540\" height=\"250\" style=\"margin-top: 5px;\">\n" +
+                "        <div class=\"user\" style=\"background-color: aliceblue; padding: 10px;\">\n" +
+                "            <h2 style=\"border-top: 1px solid blueviolet; padding-top: 1rem; margin: 0;\">Assalomu alaykum</h2><br>\n" +
+                "            <span style=\"font-size: 18px; letter-spacing: 1px; line-height: 25px;\">Siz <u><strong>free.time.uz</strong></u> veb-sahifasiga <b>{firstname} {lastname}</b> tomonidan taklif qilindingiz. </span>\n" +
+                "        </div>\n" +
+                "        <div class=\"site-info\" style=\"font-size: 18px;\">\n" +
+                "            <h3 style=\"margin: 5px 10px;\"><b>Veb-saytga a'zo bo'lish orqali quyidagi imkoniyatlarga ega bo'lasiz:</b></h3>\n" +
+                "            <ul style=\"line-height: 25px; margin: 0 10px;\">\n" +
+                "                <li>Kunlik vazifalarni rejalashtirish;</li>\n" +
+                "                <li>Hodisalar haqida qulay tarzda telegram bot va email orqali bildirishnoma olish;</li>\n" +
+                "                <li>Do'stlar va biznes hamkorlar bilan qulay vaqtda uchrashuv belgilash;</li>\n" +
+                "            </ul>\n" +
+                "            <div class=\"accept\">\n" +
+                "                <a href=\"javascript:void(0);\">Taklifni qabul qilish</a>\n" +
+                "            </div>\n" +
+                "        </div>\n" +
+                "        <div class=\"footer\">\n" +
+                "            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quaerat praesentium assumenda inventore, incidunt quod? Nulla, ipsum.</p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>";
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
-        mimeMessage.setContent("<html><body><h1>Taklif havolasi </h1><h3>" + getUserDtoFromUser(user, null) + " sizni free.time.uz saytiga taklif qilayabdi</h3> <b>Siz saytga a'zo bo'lish orqali quyidagi imkoniyatlarga ega bo'lasiz:</b><ul><li>Kunlik vazifalarni rejalashtirish</li><li>Biznes hamkorlaringiz va do'stlaringiz bilan uchrashuvlar vaqtini belgilash</li></ul></body></html>", "text/html");
+        mimeMessage.setContent(htmlMsg, "text/html");
         helper.setTo(email);
         helper.setFrom(host);
         helper.setSubject("Taklif havolasi");
