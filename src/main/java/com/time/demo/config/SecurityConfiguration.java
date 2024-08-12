@@ -42,9 +42,9 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/").permitAll()
+                        .requestMatchers("/auth/**", "/", "user/avatar/**").permitAll()
                         .requestMatchers(
-                                "/user/upload/image", "user/avatar/**", "/user/invite-friend-by-username",
+                                "/user/upload/image", "/user/invite-friend-by-username",
                                 "/api/contacts", "/api/dashboard", "/user/send-invitation-letter-to-email",
                                 "/user/get-users-by-username", "/user/accept-invitation", "/user/profile-info")
                         .hasAnyRole(ADMIN.name(), USER.name())

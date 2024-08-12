@@ -26,6 +26,7 @@ public class UserImage extends AbsMainLongEntity{
 
     private byte[] imageByte;
 
-    @OneToOne(mappedBy = "image")
-    private Users users;
+//    @OneToOne(mappedBy = "image")
+//    @EqualsAndHashCode.Exclude
+//    private Users users;
 }

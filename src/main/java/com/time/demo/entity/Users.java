@@ -44,6 +44,7 @@ public class Users extends AbsMainEntity implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
+    @EqualsAndHashCode.Exclude
     private UserImage image;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "createdBy", fetch = FetchType.EAGER)
