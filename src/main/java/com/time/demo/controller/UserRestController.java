@@ -48,8 +48,9 @@ public class UserRestController {
                 .body(byteArrayResource);
     }
 
-    @GetMapping("/get-users-by-username")
-    public List<UserDto> getUsersByUsername(@RequestParam("username") String username) {
+    @GetMapping("/get-users-by-username/{username}")
+    public List<UserDto> getUsersByUsername(@PathVariable String username) {
+        System.out.println(username);
         return userRestService.getUsersByUsername(username);
     }
 
