@@ -1,6 +1,8 @@
 package com.time.demo.service.impl;
 
 import com.time.demo.dto.ApiResponse;
+import com.time.demo.dto.PasswordDto;
+import com.time.demo.dto.ProfileDto;
 import com.time.demo.dto.UserDto;
 import com.time.demo.entity.Contacts;
 import com.time.demo.entity.UserImage;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +38,8 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
 
     @Autowired
     JavaMailSender mailSender;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Value("${spring.mail.username}")
     private String host;
 
@@ -211,6 +216,55 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
             }
         }
         return new ApiResponse("Taklif havolasi topilmadi", HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public ApiResponse updateProfile(ProfileDto profileDto, Users user) {
+        if (isValidUserName(profileDto.getUsername()))
+            return new ApiResponse("Yaroqsiz foydalanuvchi nomi", HttpStatus.BAD_REQUEST);
+        if (userRepository.existsByUsername1AndEmailNot(profileDto.getUsername(), user.getEmail()))
+            return new ApiResponse("Bu foydalanuvchi nomi band", HttpStatus.BAD_REQUEST);
+        if (userRepository.existsByPhone(profileDto.getPhone()) && profileDto.getPhone() != null && profileDto.getPhone().isEmpty())
+            return new ApiResponse("Bu telefon raqam boshqa hisob uchun ro'yhatdan o'tgan", HttpStatus.BAD_REQUEST);
+        if ((profileDto.getFirstName() == null || profileDto.getFirstName().isEmpty()) &&
+                (profileDto.getLastName() == null || profileDto.getLastName().isEmpty()) &&
+                (profileDto.getUsername() == null || profileDto.getUsername().isEmpty()))
+            return new ApiResponse("Barcha maydonlar to'ldirilishi shart", HttpStatus.BAD_REQUEST);
+        if (profileDto.getPhone() != null && profileDto.getPhone().isEmpty())
+            if (isValidPhoneNumber(Objects.requireNonNull(profileDto.getPhone())))
+                return new ApiResponse("Yaroqsiz telefon raqami", HttpStatus.BAD_REQUEST);
+        if (user.getEmail().equals(profileDto.getEmail())) {
+            Optional<Users> usersOptional = userRepository.findById(user.getId());
+            if (usersOptional.isPresent()) {
+                Users users = usersOptional.get();
+                users.setFirstName(profileDto.getFirstName());
+                users.setLastName(profileDto.getLastName());
+                users.setUsername1(profileDto.getUsername());
+                users.setPhone(profileDto.getPhone());
+                userRepository.save(users);
+                return new ApiResponse("Ma'lumotlar muvaffaqqiyatli yangilandi", HttpStatus.OK);
+            }
+        }
+        return new ApiResponse("Sizda ma'lumotlarni o'zgartirishga ruxsat yo'q", HttpStatus.FORBIDDEN);
+    }
+
+    @Override
+    public ApiResponse updatePassword(PasswordDto passwordDto, Users user) {
+        if (!isValidPassword(passwordDto.getNewPassword()))
+            return new ApiResponse("Yaroqsiz parol", HttpStatus.BAD_REQUEST);
+        if ((passwordDto.getOldPassword() == null || passwordDto.getOldPassword().isEmpty()) &&
+                (passwordDto.getNewPassword() == null || passwordDto.getNewPassword().isEmpty()))
+            return new ApiResponse("Maydonlar to'ldirilishi zarur", HttpStatus.BAD_REQUEST);
+        Optional<Users> usersOptional = userRepository.findById(user.getId());
+        if (usersOptional.isPresent()) {
+            Users users = usersOptional.get();
+            if (passwordEncoder.matches(passwordDto.getOldPassword(), users.getPassword())) {
+                users.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
+                userRepository.save(users);
+                return new ApiResponse("Parol o'zgartirildi", HttpStatus.OK);
+            }
+        }
+        return new ApiResponse("Foydalanuvchi ma'lumotlari topilmadi", HttpStatus.NOT_FOUND);
     }
 
     private String getExtension(String fileName) {

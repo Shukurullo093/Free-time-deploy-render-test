@@ -26,10 +26,10 @@ public class Users extends AbsMainEntity implements UserDetails {
     @Column(nullable = false, length = 20)
     private String lastName;
 
-    @Column(nullable = false, unique = true, length = 20)   //  only lowercases & numbers
+    @Column(nullable = false, unique = true, length = 50)   //  only lowercases & numbers
     private String username1;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 50)   //  cannot change
     private String email;
 
     @Column(nullable = false)

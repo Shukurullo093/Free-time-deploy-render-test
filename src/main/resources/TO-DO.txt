@@ -1,7 +1,7 @@
     -upload user image
     -view image
-    save phone
-    update user info
+    -save phone
+    -update user info
     -create user & user image entity
     -register
     -email verification

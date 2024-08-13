@@ -34,6 +34,7 @@ public class TestController extends AbsGeneral {
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>SURNAME</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>USERNAME</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>EMAIL</th>" +
+                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>PHONE</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>IMAGE</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>ENABLED</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>EMAIL-CODE</th>" +
@@ -45,6 +46,7 @@ public class TestController extends AbsGeneral {
                     .append(usersList.get(j).getLastName()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(usersList.get(j).getUsername1()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(usersList.get(j).getEmail()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(usersList.get(j).getPhone()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(usersList.get(j).getImage() != null ? usersList.get(j).getImage().getId() : null).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(usersList.get(j).isEnabled()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(usersList.get(j).getEmailCode()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")

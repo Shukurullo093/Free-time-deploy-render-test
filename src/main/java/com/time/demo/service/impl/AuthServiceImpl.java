@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +39,7 @@ public class AuthServiceImpl extends AbsGeneral implements AuthService {
             return new ApiResponse("Yaroqsiz parol", HttpStatus.BAD_REQUEST);
         if (userRepository.existsByUsername1(registerDto.getUsername()))
             return new ApiResponse("Bu foydalanuvchi nomi allaqachon foydalanilgan", HttpStatus.BAD_REQUEST);
-        if (!isValidUsername(registerDto.getUsername()))
+        if (isValidUserName(registerDto.getUsername()))
             return new ApiResponse("Yaroqsiz foydalanuvchi nomi", HttpStatus.BAD_REQUEST);
         Optional<Users> usersOptional = userRepository.findByEmail(registerDto.getEmail());
         if (usersOptional.isEmpty()) {
@@ -147,33 +145,6 @@ public class AuthServiceImpl extends AbsGeneral implements AuthService {
             e.getStackTrace();
             return false;
         }
-    }
-
-    private static boolean isValidPassword(String pass) {
-        String regExp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$&*+=])(?=\\S+$).{8,30}$";
-
-        Pattern pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(pass);
-
-        return matcher.matches();
-/*
-    Kamida bitta raqam ([0-9]) bo'lishi kerak.
-    Kamida bitta kichik harf ([a-z]) bo'lishi kerak.
-    Kamida bitta katta harf ([A-Z]) bo'lishi kerak.
-    Kamida bitta maxsus belgilar ([@#$%^&+=]) dan biri bo'lishi kerak.
-    Hech qanday bo'sh joy (\s) bo'lmasligi kerak (\S+).
-    Umumiy uzunlik kamida 8 va ko'pi bilan 30 ta belgi bo'lishi kerak.
-*/
-    }
-
-    private static boolean isValidUsername(String username) {
-        // [48-57] ->numbers | [97-122] -> lowercases
-        for (int i = 0; i < username.length(); i++) {
-            int asciiIndex = username.charAt(i);
-            if ((asciiIndex < 48 || (asciiIndex > 57 && asciiIndex < 97) || asciiIndex > 122))
-                return false;
-        }
-        return true;
     }
 
     private static String generateOTP() {

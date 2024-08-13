@@ -28,4 +28,9 @@ public class UserController {
     public Map<String, List<ContactsDto>> getContactsList(@CurrentUser Users user) {
         return userService.getContactsList(user);
     }
+
+    @GetMapping("/profile")
+    public Map<String, ProfileDto> getProfileInfo(@CurrentUser Users user){
+        return userService.getProfileInfo(user);
+    }
 }

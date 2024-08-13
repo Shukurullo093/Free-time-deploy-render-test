@@ -1,11 +1,12 @@
 package com.time.demo.controller;
 
 import com.time.demo.dto.ApiResponse;
+import com.time.demo.dto.PasswordDto;
+import com.time.demo.dto.ProfileDto;
 import com.time.demo.dto.UserDto;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
 import com.time.demo.repository.UserImageRepository;
-import com.time.demo.repository.UserRepository;
 import com.time.demo.security.CurrentUser;
 import com.time.demo.service.UserRestService;
 import jakarta.mail.MessagingException;
@@ -28,7 +29,6 @@ import java.util.Optional;
 public class UserRestController {
     private final UserRestService userRestService;
     private final UserImageRepository userImageRepository;
-    private final UserRepository userRepository;
 
     @PostMapping("/upload/image")
     public ApiResponse uploadImage(@RequestParam("image") MultipartFile image, @CurrentUser Users users) throws IOException {
@@ -50,7 +50,6 @@ public class UserRestController {
 
     @GetMapping("/get-users-by-username/{username}")
     public List<UserDto> getUsersByUsername(@PathVariable String username) {
-        System.out.println(username);
         return userRestService.getUsersByUsername(username);
     }
 
@@ -73,13 +72,25 @@ public class UserRestController {
     }
 
     @DeleteMapping("/delete/invitation/{id}")
-    public ResponseEntity<ApiResponse> deleteInvitation(@PathVariable Long id, @CurrentUser Users user){
+    public ResponseEntity<ApiResponse> deleteInvitation(@PathVariable Long id, @CurrentUser Users user) {
         ApiResponse delete = userRestService.deleteInvitation(id, user);
         return ResponseEntity.status(delete.getHttpStatus()).body(delete);
     }
 
     @GetMapping("/profile-info")
-    public UserDto getProfileInfo(@CurrentUser Users user){
+    public UserDto getProfileInfo(@CurrentUser Users user) {
         return userRestService.getProfileInfo(user);
+    }
+
+    @PutMapping("/update/profile")
+    public ResponseEntity<ApiResponse> updateProfile(@RequestBody ProfileDto profileDto, @CurrentUser Users user) {
+        ApiResponse apiResponse = userRestService.updateProfile(profileDto, user);
+        return ResponseEntity.status(apiResponse.getHttpStatus()).body(apiResponse);
+    }
+
+    @PutMapping("/update/password")
+    public ResponseEntity<ApiResponse> updatePassword(@RequestBody PasswordDto passwordDto, @CurrentUser Users user){
+        ApiResponse apiResponse = userRestService.updatePassword(passwordDto, user);
+        return ResponseEntity.status(apiResponse.getHttpStatus()).body(apiResponse);
     }
 }

@@ -1,6 +1,7 @@
 package com.time.demo.service.impl;
 
 import com.time.demo.dto.ContactsDto;
+import com.time.demo.dto.ProfileDto;
 import com.time.demo.entity.Contacts;
 import com.time.demo.entity.Users;
 import com.time.demo.repository.ContactsRepository;
@@ -9,10 +10,7 @@ import com.time.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +36,24 @@ public class UserServiceImpl implements UserService {
                     contacts.getStatus()));
         }
         map.put("contactsList", contactsDtoList);
+        return map;
+    }
+
+    @Override
+    public Map<String, ProfileDto> getProfileInfo(Users user) {
+        Map<String, ProfileDto> map = new HashMap<>();
+        Optional<Users> usersOptional = userRepository.findById(user.getId());
+        if (usersOptional.isPresent()) {
+            Users users = usersOptional.get();
+            ProfileDto profileDto = new ProfileDto(
+                    users.getFirstName(),
+                    users.getLastName(),
+                    users.getUsername1(),
+                    users.getEmail(),
+                    users.getPhone()
+            );
+            map.put("user", profileDto);
+        }
         return map;
     }
 }

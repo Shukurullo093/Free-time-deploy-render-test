@@ -1,6 +1,8 @@
 package com.time.demo.service;
 
 import com.time.demo.dto.ApiResponse;
+import com.time.demo.dto.PasswordDto;
+import com.time.demo.dto.ProfileDto;
 import com.time.demo.dto.UserDto;
 import com.time.demo.entity.Users;
 import jakarta.mail.MessagingException;
@@ -25,4 +27,8 @@ public interface UserRestService {
     UserDto getProfileInfo(Users user);
 
     ApiResponse deleteInvitation(Long id, Users user);
+
+    ApiResponse updateProfile(ProfileDto profileDto, Users user);
+
+    ApiResponse updatePassword(PasswordDto passwordDto, Users user);
 }

@@ -5,6 +5,8 @@ import com.time.demo.entity.Users;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class AbsGeneral {
     public UserDto getUserDtoFromUser(Users user, String jwtToken) {
@@ -34,5 +36,36 @@ public abstract class AbsGeneral {
                 ));
         });
         return userDtoList;
+    }
+
+    public boolean isValidUserName(String username) {
+        // [48-57] ->numbers | [97-122] -> lowercases
+        for (int i = 0; i < username.length(); i++) {
+            int asciiIndex = username.charAt(i);
+            if ((asciiIndex < 48 || (asciiIndex > 57 && asciiIndex < 97) || asciiIndex > 122))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isValidPassword(String pass) {
+        String regExp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$&*+=])(?=\\S+$).{8,30}$";
+
+        Pattern pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(pass);
+
+        return matcher.matches();
+/*
+    Kamida bitta raqam ([0-9]) bo'lishi kerak.
+    Kamida bitta kichik harf ([a-z]) bo'lishi kerak.
+    Kamida bitta katta harf ([A-Z]) bo'lishi kerak.
+    Kamida bitta maxsus belgilar ([@#$%^&+=]) dan biri bo'lishi kerak.
+    Hech qanday bo'sh joy (\s) bo'lmasligi kerak (\S+).
+    Umumiy uzunlik kamida 8 va ko'pi bilan 30 ta belgi bo'lishi kerak.
+*/
+    }
+
+    public boolean isValidPhoneNumber(String phoneNumber){
+        return phoneNumber.length() == 13 && phoneNumber.startsWith("+998");
     }
 }
