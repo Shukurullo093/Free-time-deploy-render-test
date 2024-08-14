@@ -17,6 +17,7 @@
 
     -get user data with token
 
+    notification dto
 
-    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-    messageDto.setDate(dateFormat.format(homeMessage.getCreatedDate()));
+
+    cinelef353@chaladas.com EDwD22#@dd

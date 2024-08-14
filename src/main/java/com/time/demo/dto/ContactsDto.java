@@ -14,7 +14,10 @@ public class ContactsDto {
     private String lastName;
     private String username;
     private String email;
+    private String phone;
     private String image; // image-path
+    private String createdDate;
     private InviteStatus status;
+    private boolean isSender;
 }
 

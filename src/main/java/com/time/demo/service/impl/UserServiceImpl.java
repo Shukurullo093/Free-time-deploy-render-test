@@ -14,26 +14,38 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends AbsGeneral implements UserService {
     private final UserRepository userRepository;
     private final ContactsRepository contactsRepository;
 
     @Override
     public Map<String, List<ContactsDto>> getContactsList(Users user) {
         Map<String, List<ContactsDto>> map = new HashMap<>();
-        List<Contacts> allByCreatedBy = contactsRepository.findAllByCreatedBy(user.getId());
+        List<Contacts> allByCreatedBy = contactsRepository.findAllByCreatedByOrContactIdOrderByCreatedAtDesc(user.getId(), user.getId());
         List<ContactsDto> contactsDtoList = new ArrayList<>();
         for (Contacts contacts : allByCreatedBy) {
-            Users contact = contacts.getContact();
-            String avatarLink = user.getImage() != null ? "localhost:8080/user/avatar/" + contact.getImage().getHashId() : null;
+            Users contact;
+            boolean isSender;
+            if (contacts.getCreatedBy().equals(user.getId())) {
+                contact = contacts.getContact();
+                isSender = true;
+            } else {
+                contact = userRepository.findById(contacts.getCreatedBy()).get();
+                isSender = false;
+            }
+
+            String avatarLink = contact.getImage() != null ? "localhost:8080/user/avatar/" + contact.getImage().getHashId() : null;
             contactsDtoList.add(new ContactsDto(
                     contact.getId(),
                     contact.getFirstName(),
                     contact.getLastName(),
                     contact.getUsername1(),
                     contact.getEmail(),
+                    contact.getPhone(),
                     avatarLink,
-                    contacts.getStatus()));
+                    getFormattedDate(contacts.getCreatedAt(), "dd/MM/yyyy HH:mm"),
+                    contacts.getStatus(),
+                    isSender));
         }
         map.put("contactsList", contactsDtoList);
         return map;

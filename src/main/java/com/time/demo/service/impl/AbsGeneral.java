@@ -3,6 +3,9 @@ package com.time.demo.service.impl;
 import com.time.demo.dto.UserDto;
 import com.time.demo.entity.Users;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -67,5 +70,10 @@ public abstract class AbsGeneral {
 
     public boolean isValidPhoneNumber(String phoneNumber){
         return phoneNumber.length() == 13 && phoneNumber.startsWith("+998");
+    }
+
+    public String getFormattedDate(Timestamp dateTime, String format){
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.format(dateTime);
     }
 }

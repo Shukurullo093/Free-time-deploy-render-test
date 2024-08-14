@@ -10,6 +10,9 @@ import java.util.List;
 @Repository
 public interface ContactsRepository extends JpaRepository<Contacts, Long> {
     List<Contacts> findAllByCreatedBy(Long ownerId);
+    List<Contacts> findAllByCreatedByOrContactIdOrderByCreatedAtDesc(Long ownerId, Long ownerId1);
 
     boolean existsByContactUsername1AndStatus(String username, InviteStatus status);
 }
+
+// https://www.geeksforgeeks.org/spring-boot-jpa-native-query-with-example/
