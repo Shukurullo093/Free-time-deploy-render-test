@@ -44,7 +44,7 @@ public class UserServiceImpl extends AbsGeneral implements UserService {
                     contact.getPhone(),
                     avatarLink,
                     getFormattedDate(contacts.getCreatedAt(), "dd/MM/yyyy HH:mm"),
-                    contacts.getStatus(),
+                    contacts.getContactType(),
                     isSender));
         }
         map.put("contactsList", contactsDtoList);

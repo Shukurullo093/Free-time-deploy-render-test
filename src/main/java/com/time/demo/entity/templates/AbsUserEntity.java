@@ -12,11 +12,9 @@ import org.springframework.data.annotation.LastModifiedBy;
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbsUserEntity extends AbsMainEntity{
     @JoinColumn(updatable = false)
-    // @ManyToOne(fetch = FetchType.LAZY)
     @CreatedBy
     private Long createdBy;
 
-    //  @ManyToOne(fetch = FetchType.LAZY)
     @LastModifiedBy
     private Long updatedBy;
 }

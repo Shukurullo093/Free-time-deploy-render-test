@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                                 "/user/upload/image", "/user/invite-friend-by-username",
                                 "/api/contacts", "/api/dashboard", "/user/send-invitation-letter-to-email",
                                 "/user/get-users-by-username", "/user/accept-invitation", "/user/profile-info",
-                                "/user/update/**", "/api/**")
+                                "/user/update/**", "/api/**", "/user/create-group", "/user/delete-group/")
                         .hasAnyRole(ADMIN.name(), USER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

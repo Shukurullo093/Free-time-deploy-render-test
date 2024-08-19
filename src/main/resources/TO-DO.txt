@@ -17,7 +17,7 @@
 
     -get user data with token
 
-    notification dto
+    -notification dto
 
 
     cinelef353@chaladas.com EDwD22#@dd

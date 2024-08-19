@@ -48,14 +48,26 @@ public class UserRestController {
                 .body(byteArrayResource);
     }
 
+    @PostMapping("/create-group")
+    public ResponseEntity<ApiResponse> createGroup(@CurrentUser Users user, @RequestParam("groupName")String name, @RequestParam("category")String category){
+        ApiResponse createGroup = userRestService.createGroup(user, name, category);
+        return ResponseEntity.status(createGroup.getHttpStatus()).body(createGroup);
+    }
+
+    @DeleteMapping("/delete-group/{groupId}")
+    public ResponseEntity<ApiResponse> deleteGroup(@CurrentUser Users user, @PathVariable long groupId){
+        ApiResponse deleteGroup = userRestService.deleteGroup(user, groupId);
+        return ResponseEntity.status(deleteGroup.getHttpStatus()).body(deleteGroup);
+    }
+
     @GetMapping("/get-users-by-username/{username}")
     public List<UserDto> getUsersByUsername(@PathVariable String username) {
         return userRestService.getUsersByUsername(username);
     }
 
     @PostMapping("/invite-friend-by-username")
-    public ResponseEntity<ApiResponse> inviteFriendByUsername(@RequestParam("username") String username) {
-        ApiResponse invite = userRestService.inviteFriendByUsername(username);
+    public ResponseEntity<ApiResponse> inviteFriendByUsername(@CurrentUser Users user, @RequestParam("username") String username, @RequestParam("body") String body) {
+        ApiResponse invite = userRestService.inviteFriendByUsername(user, username, body);
         return ResponseEntity.status(invite.getHttpStatus()).body(invite);
     }
 
@@ -66,9 +78,12 @@ public class UserRestController {
     }
 
     @PostMapping("/accept-invitation")
-    public ResponseEntity<ApiResponse> acceptInvitation(@RequestParam("id") Long id, @RequestParam("answer") String answer, @CurrentUser Users user) {
-        ApiResponse invite = userRestService.acceptInvitation(id, answer, user);
-        return ResponseEntity.status(invite.getHttpStatus()).body(invite);
+    public ResponseEntity<ApiResponse> addUserToContactOrGroup(@RequestParam("userId") Long userId,
+                                                        @RequestParam("groupId")Long groupId,
+                                                        @RequestParam("save")boolean save,
+                                                        @CurrentUser Users user) {
+        ApiResponse addUserToContactOrGroup = userRestService.addUserToContactOrGroup(userId, groupId, save, user);
+        return ResponseEntity.status(addUserToContactOrGroup.getHttpStatus()).body(addUserToContactOrGroup);
     }
 
     @DeleteMapping("/delete/invitation/{id}")

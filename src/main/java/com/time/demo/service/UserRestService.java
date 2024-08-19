@@ -16,13 +16,13 @@ import java.util.List;
 public interface UserRestService {
     ApiResponse uploadImage(MultipartFile image, String email) throws IOException;
 
-    ApiResponse inviteFriendByUsername(String username);
+    ApiResponse inviteFriendByUsername(Users user, String username, String body);
 
     ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException;
 
     List<UserDto> getUsersByUsername(String username);
 
-    ApiResponse acceptInvitation(Long id, String answer, Users user);
+    ApiResponse addUserToContactOrGroup(Long userId, Long groupId, boolean save, Users user);
 
     UserDto getProfileInfo(Users user);
 
@@ -31,4 +31,8 @@ public interface UserRestService {
     ApiResponse updateProfile(ProfileDto profileDto, Users user);
 
     ApiResponse updatePassword(PasswordDto passwordDto, Users user);
+
+    ApiResponse createGroup(Users user, String name, String category);
+
+    ApiResponse deleteGroup(Users user, long groupId);
 }

@@ -1,6 +1,6 @@
 package com.time.demo.dto;
 
-import com.time.demo.entity.enums.InviteStatus;
+import com.time.demo.entity.enums.ContactType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ public class ContactsDto {
     private String phone;
     private String image; // image-path
     private String createdDate;
-    private InviteStatus status;
-    private boolean isSender;
+    private ContactType status;
+    private boolean isHolder;
 }
 

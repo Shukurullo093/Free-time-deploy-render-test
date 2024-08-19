@@ -1,9 +1,11 @@
 package com.time.demo.controller;
 
 import com.time.demo.entity.Contacts;
+import com.time.demo.entity.Group;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
 import com.time.demo.repository.ContactsRepository;
+import com.time.demo.repository.GroupRepository;
 import com.time.demo.repository.UserImageRepository;
 import com.time.demo.repository.UserRepository;
 import com.time.demo.service.impl.AbsGeneral;
@@ -22,6 +24,7 @@ public class TestController extends AbsGeneral {
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
     private final ContactsRepository contactsRepository;
+    private final GroupRepository groupRepository;
 
     @GetMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
     public @ResponseBody String test() {
@@ -74,13 +77,31 @@ public class TestController extends AbsGeneral {
         }
         stringBuilder.append("</tr></table>");
 
-        List<Contacts> contactsList = contactsRepository.findAll();
+        List<Group> groupList = groupRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        stringBuilder.append("<h2><b>Group List:</b></h2>");
+        stringBuilder.append("<table style='border-collapse: collapse;'><tr>" +
+                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>ID</th>" +
+                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>CREATED-BY</th>" +
+                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>NAME</th>" +
+                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>CATEGORY</th></tr>");
+        for (int j = 0; j < groupList.size(); j++) {
+            stringBuilder
+                    .append("<tr><td style='border: 1px dashed black; padding: 1px 3px;'>")
+                    .append(groupList.get(j).getId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(groupList.get(j).getCreatedBy()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(groupList.get(j).getName()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(groupList.get(j).getCategory()).append("</td>");
+        }
+        stringBuilder.append("</tr></table>");
+
+        List<Contacts> contactsList = contactsRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
         stringBuilder.append("<h2><b>Contacts List:</b></h2>");
         stringBuilder.append("<table style='border-collapse: collapse;'><tr>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>ID</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>CREATED-BY</th>" +
-                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>FRIEND-ID</th>" +
-                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>STATUS</th>" +
+                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>CONTACT-ID</th>" +
+                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>GROUP</th>" +
+                "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>CONTACT-TYPE</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>CREATED-AT</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>UPDATED-AT</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>UPDATED-BY</th></tr>");
@@ -89,7 +110,8 @@ public class TestController extends AbsGeneral {
                     .append(contactsList.get(j).getId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(contactsList.get(j).getCreatedBy()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(contactsList.get(j).getContact().getId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(contactsList.get(j).getStatus()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(contactsList.get(j).getGroup().getId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(contactsList.get(j).getContactType()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(contactsList.get(j).getCreatedAt()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(contactsList.get(j).getUpdatedAt()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(contactsList.get(j).getUpdatedBy()).append("</td>");
