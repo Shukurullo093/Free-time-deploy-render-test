@@ -1,24 +1,14 @@
 package com.time.demo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApiResponse {
     private String message;
-    private HttpStatus httpStatus;
-    private UserDto user;
-
-    public ApiResponse(String message, HttpStatus httpStatus) {
-        this.message = message;
-        this.httpStatus = httpStatus;
-    }
-
-
+    private int responseCode;
 }
 
 

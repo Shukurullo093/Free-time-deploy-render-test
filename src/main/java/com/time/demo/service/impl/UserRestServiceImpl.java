@@ -1,9 +1,6 @@
 package com.time.demo.service.impl;
 
-import com.time.demo.dto.ApiResponse;
-import com.time.demo.dto.PasswordDto;
-import com.time.demo.dto.ProfileDto;
-import com.time.demo.dto.UserDto;
+import com.time.demo.dto.*;
 import com.time.demo.entity.*;
 import com.time.demo.entity.enums.ContactType;
 import com.time.demo.entity.enums.GroupCategory;
@@ -47,7 +44,7 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
     @Override
     public ApiResponse uploadImage(MultipartFile image, String email) throws IOException {
         if (!Objects.requireNonNull(image.getContentType()).split("/")[0].equals("image")) // only images, image/*
-            return new ApiResponse("File formati xato", HttpStatus.BAD_REQUEST);
+            return new ApiResponse("File formati xato", 400);
         Optional<Users> usersOptional = userRepository.findByEmail(email);
         if (usersOptional.isPresent()) {
             Users users = usersOptional.get();
@@ -69,14 +66,14 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
             users.setImage(savedImage);
             userRepository.save(users);
         }
-        return new ApiResponse("Profil uchun rasm yuklandi", HttpStatus.CREATED);
+        return new ApiResponse("Profil uchun rasm yuklandi", 200);
     }
 
     @Transactional
     @Override
-    public ApiResponse inviteFriendByUsername(Users user, String username, String body) {
+    public ApiResponse sendJoinRequest(Users user, String username, String body) {
         if (contactsRepository.existsByContactUsername1AndCreatedBy(username, user.getId()))
-            return new ApiResponse("Ushbu foydalanuvchi bilan allaqachon bog'langansiz", HttpStatus.OK);
+            return new ApiResponse("Ushbu foydalanuvchi bilan allaqachon bog'langansiz", 200);
 
         Optional<Users> byUsername = userRepository.findByUsername1(username);
         if (byUsername.isPresent() && byUsername.get().isEnabled()) {
@@ -86,9 +83,9 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
                     false
             );
             messageRepository.save(message);
-            return new ApiResponse("Taklif havolasi yuborildi", HttpStatus.OK);
+            return new ApiResponse("Taklif havolasi yuborildi", 200);
         }
-        return new ApiResponse("Bunday foydalanuvchi nom egasi topilmadi", HttpStatus.BAD_REQUEST);
+        return new ApiResponse("Bunday foydalanuvchi nom egasi topilmadi", 400);
     }
 
     @Override
@@ -169,7 +166,7 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
         helper.setFrom(host);
         helper.setSubject("Taklif havolasi");
         mailSender.send(mimeMessage);
-        return new ApiResponse("Emailga taklif havolasi yuborildi", HttpStatus.OK);
+        return new ApiResponse("Emailga taklif havolasi yuborildi", 200);
     }
 
     @Override
@@ -185,34 +182,15 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
     @Override
     public ApiResponse addUserToContactOrGroup(Long userId, Long groupId, boolean save, Users user) {
         if (!groupRepository.existsByIdAndCreatedBy(groupId, user.getId()))
-            return new ApiResponse("Sizda guruhga foydalanuvchi qo'shishga ruxsat yo'q", HttpStatus.FORBIDDEN);
-
-        Contacts contact=new Contacts();
-        contact.setContact(userRepository.findById(userId).get());
-        if (save && groupId>0){
-            contact.setGroup(groupRepository.findById(groupId).get());
-            contact.setContactType(ContactType.GROUP_AND_CONTACT);
-        } else if (save && groupId==0) {
-            contact.setContactType(ContactType.ONLY_CONTACT);
-        } else {
-            contact.setGroup(groupRepository.findById(groupId).get());
-            contact.setContactType(ContactType.ONLY_GROUP);
+            return new ApiResponse("Sizda guruhga foydalanuvchi qo'shishga ruxsat yo'q", 403);
+        Optional<Users> usersOptional = userRepository.findById(userId);
+        if (usersOptional.isEmpty()) {
+            return new ApiResponse("Fodalanuvchi topilmadi", 404);
         }
-        contactsRepository.save(contact);
-        return new ApiResponse("Contact saqlandi", HttpStatus.OK);
-//        Optional<Contacts> contactsOptional = contactsRepository.findById(id);
-//        if (contactsOptional.isPresent()) {
-//            Contacts contacts = contactsOptional.get();
-//            if (contacts.getContact().getId().equals(user.getId())) {
-////                contacts.setStatus(ContactType.valueOf(answer.toUpperCase()));
-//                contactsRepository.save(contacts);
-//                String msg = answer.equalsIgnoreCase("accept") ? "Taklif so'rovi qabul qilindi" : "Taklif so'rovi rad etildi";
-//                return new ApiResponse(msg, HttpStatus.OK);
-//            } else {
-//                return new ApiResponse("Sizda bu taklifga javob berishga ruxsat yo'q", HttpStatus.FORBIDDEN);
-//            }
-//        }
-//        return new ApiResponse("Taklif havolasi topilmadi", HttpStatus.NOT_FOUND);
+        Contacts contact = new Contacts();
+        contact.setContact(usersOptional.get());
+        saveContact(groupId, save, contact);
+        return new ApiResponse("Contact saqlandi", 200);
     }
 
     @Override
@@ -232,27 +210,27 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
             Contacts contacts = contactsOptional.get();
             if (contacts.getCreatedBy().equals(user.getId())) {
                 contactsRepository.deleteById(id);
-                return new ApiResponse("Foydalanuvchi bilan aloqa uzildi", HttpStatus.OK);
+                return new ApiResponse("Foydalanuvchi bilan aloqa uzildi", 200);
             }
         }
-        return new ApiResponse("Taklif havolasi topilmadi", HttpStatus.BAD_REQUEST);
+        return new ApiResponse("Taklif havolasi topilmadi", 400);
     }
 
     @Override
     public ApiResponse updateProfile(ProfileDto profileDto, Users user) {
         if (isValidUserName(profileDto.getUsername()))
-            return new ApiResponse("Yaroqsiz foydalanuvchi nomi", HttpStatus.BAD_REQUEST);
+            return new ApiResponse("Yaroqsiz foydalanuvchi nomi", 400);
         if (userRepository.existsByUsername1AndEmailNot(profileDto.getUsername(), user.getEmail()))
-            return new ApiResponse("Bu foydalanuvchi nomi band", HttpStatus.BAD_REQUEST);
+            return new ApiResponse("Bu foydalanuvchi nomi band", 400);
         if (userRepository.existsByPhone(profileDto.getPhone()) && profileDto.getPhone() != null && profileDto.getPhone().isEmpty())
-            return new ApiResponse("Bu telefon raqam boshqa hisob uchun ro'yhatdan o'tgan", HttpStatus.BAD_REQUEST);
+            return new ApiResponse("Bu telefon raqam boshqa hisob uchun ro'yhatdan o'tgan", 400);
         if ((profileDto.getFirstName() == null || profileDto.getFirstName().isEmpty()) &&
                 (profileDto.getLastName() == null || profileDto.getLastName().isEmpty()) &&
                 (profileDto.getUsername() == null || profileDto.getUsername().isEmpty()))
-            return new ApiResponse("Barcha maydonlar to'ldirilishi shart", HttpStatus.BAD_REQUEST);
+            return new ApiResponse("Barcha maydonlar to'ldirilishi shart", 400);
         if (profileDto.getPhone() != null && profileDto.getPhone().isEmpty())
             if (isValidPhoneNumber(Objects.requireNonNull(profileDto.getPhone())))
-                return new ApiResponse("Yaroqsiz telefon raqami", HttpStatus.BAD_REQUEST);
+                return new ApiResponse("Yaroqsiz telefon raqami", 400);
         if (user.getEmail().equals(profileDto.getEmail())) {
             Optional<Users> usersOptional = userRepository.findById(user.getId());
             if (usersOptional.isPresent()) {
@@ -262,57 +240,85 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
                 users.setUsername1(profileDto.getUsername());
                 users.setPhone(profileDto.getPhone());
                 userRepository.save(users);
-                return new ApiResponse("Ma'lumotlar muvaffaqqiyatli yangilandi", HttpStatus.OK);
+                return new ApiResponse("Ma'lumotlar muvaffaqqiyatli yangilandi", 200);
             }
         }
-        return new ApiResponse("Sizda ma'lumotlarni o'zgartirishga ruxsat yo'q", HttpStatus.FORBIDDEN);
+        return new ApiResponse("Sizda ma'lumotlarni o'zgartirishga ruxsat yo'q", 403);
     }
 
     @Override
     public ApiResponse updatePassword(PasswordDto passwordDto, Users user) {
         if (!isValidPassword(passwordDto.getNewPassword()))
-            return new ApiResponse("Yaroqsiz parol", HttpStatus.BAD_REQUEST);
+            return new ApiResponse("Yaroqsiz parol", 400);
         if ((passwordDto.getOldPassword() == null || passwordDto.getOldPassword().isEmpty()) &&
                 (passwordDto.getNewPassword() == null || passwordDto.getNewPassword().isEmpty()))
-            return new ApiResponse("Maydonlar to'ldirilishi zarur", HttpStatus.BAD_REQUEST);
+            return new ApiResponse("Maydonlar to'ldirilishi zarur", 400);
         Optional<Users> usersOptional = userRepository.findById(user.getId());
         if (usersOptional.isPresent()) {
             Users users = usersOptional.get();
             if (passwordEncoder.matches(passwordDto.getOldPassword(), users.getPassword())) {
                 users.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
                 userRepository.save(users);
-                return new ApiResponse("Parol o'zgartirildi", HttpStatus.OK);
+                return new ApiResponse("Parol o'zgartirildi", 200);
             }
         }
-        return new ApiResponse("Foydalanuvchi ma'lumotlari topilmadi", HttpStatus.NOT_FOUND);
+        return new ApiResponse("Foydalanuvchi ma'lumotlari topilmadi", 403);
     }
 
     @Override
     public ApiResponse createGroup(Users user, String name, String category) {
         if (groupRepository.existsByNameAndCreatedBy(name, user.getId()))
-            return new ApiResponse("Bunday guruh nomini allaqachon ishlatgansiz", HttpStatus.ALREADY_REPORTED);
+            return new ApiResponse("Bunday guruh nomini allaqachon ishlatgansiz", 409);
 
-        Group group=new Group(
+        Group group = new Group(
                 name,
                 GroupCategory.valueOf(category)
         );
         groupRepository.save(group);
-        return new ApiResponse("Guruh yaratildi", HttpStatus.CREATED);
+        return new ApiResponse("Guruh yaratildi", 200);
     }
 
     @Override
     public ApiResponse deleteGroup(Users user, long groupId) {
         //  must check to exist if have any contact linked to group before delete group
         Optional<Group> groupOptional = groupRepository.findById(groupId);
-        if (groupOptional.isPresent()){
-            if (groupOptional.get().getCreatedBy().equals(user.getId())){
+        if (groupOptional.isPresent()) {
+            if (groupOptional.get().getCreatedBy().equals(user.getId())) {
                 //  delete all contacts related to group from contacts table
                 groupRepository.deleteById(groupId);
-                return new ApiResponse("Guruh o'chirildi", HttpStatus.OK);
+                return new ApiResponse("Guruh o'chirildi", 200);
             }
-            return new ApiResponse("Sizda guruhni o'chirishga vakolat yo'q", HttpStatus.FORBIDDEN);
+            return new ApiResponse("Sizda guruhni o'chirishga vakolat yo'q", 403);
         }
-        return new ApiResponse("Guruh ma'lumotlari topilmadi", HttpStatus.NOT_FOUND);
+        return new ApiResponse("Guruh ma'lumotlari topilmadi", 404);
+    }
+
+    @Override
+    public ApiResponse updateUserContact(Long contactId, Long groupId, boolean save, Users user) {
+        Optional<Contacts> contactsOptional = contactsRepository.findById(contactId);
+        if (contactsOptional.isPresent()) {
+            Contacts contact = contactsOptional.get();
+            if (contact.getCreatedBy().equals(user.getId())) {
+                saveContact(groupId, save, contact);
+                return new ApiResponse("Contact ma'lumotlari yangilandi", 200);
+            }
+            return new ApiResponse("Contactni yangilashga ruxsat yo'q", 403);
+        }
+        return new ApiResponse("Contact ma'lumotlari topilmadi", 404);
+    }
+
+    private void saveContact(Long groupId, boolean save, Contacts contact) {
+        Optional<Group> groupOptional = groupRepository.findById(groupId);
+        if (save && groupId > 0) {
+            contact.setGroup(groupOptional.orElse(null));
+            contact.setContactType(ContactType.GROUP_AND_CONTACT);
+        } else if (save && groupId == 0) {
+            contact.setContactType(ContactType.ONLY_CONTACT);
+        } else {
+            contact.setGroup(groupOptional.orElse(null));
+            contact.setContactType(ContactType.ONLY_GROUP);
+        }
+        contactsRepository.save(contact);
     }
 
     private String getExtension(String fileName) {

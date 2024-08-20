@@ -21,6 +21,7 @@ public class UserController {
 
     @GetMapping("/dashboard")
     public ResponseEntity<?> dashboard(@CurrentUser Users user) {
+
         return ResponseEntity.ok("");
     }
 

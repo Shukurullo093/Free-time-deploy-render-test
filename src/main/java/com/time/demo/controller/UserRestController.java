@@ -1,9 +1,6 @@
 package com.time.demo.controller;
 
-import com.time.demo.dto.ApiResponse;
-import com.time.demo.dto.PasswordDto;
-import com.time.demo.dto.ProfileDto;
-import com.time.demo.dto.UserDto;
+import com.time.demo.dto.*;
 import com.time.demo.entity.UserImage;
 import com.time.demo.entity.Users;
 import com.time.demo.repository.UserImageRepository;
@@ -50,14 +47,14 @@ public class UserRestController {
 
     @PostMapping("/create-group")
     public ResponseEntity<ApiResponse> createGroup(@CurrentUser Users user, @RequestParam("groupName")String name, @RequestParam("category")String category){
-        ApiResponse createGroup = userRestService.createGroup(user, name, category);
-        return ResponseEntity.status(createGroup.getHttpStatus()).body(createGroup);
+        ApiResponse response = userRestService.createGroup(user, name, category);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
     @DeleteMapping("/delete-group/{groupId}")
     public ResponseEntity<ApiResponse> deleteGroup(@CurrentUser Users user, @PathVariable long groupId){
-        ApiResponse deleteGroup = userRestService.deleteGroup(user, groupId);
-        return ResponseEntity.status(deleteGroup.getHttpStatus()).body(deleteGroup);
+        ApiResponse response = userRestService.deleteGroup(user, groupId);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
     @GetMapping("/get-users-by-username/{username}")
@@ -66,30 +63,39 @@ public class UserRestController {
     }
 
     @PostMapping("/invite-friend-by-username")
-    public ResponseEntity<ApiResponse> inviteFriendByUsername(@CurrentUser Users user, @RequestParam("username") String username, @RequestParam("body") String body) {
-        ApiResponse invite = userRestService.inviteFriendByUsername(user, username, body);
-        return ResponseEntity.status(invite.getHttpStatus()).body(invite);
+    public ResponseEntity<ApiResponse> sendJoinRequest(@CurrentUser Users user, @RequestParam("username") String username, @RequestParam("body") String body) {
+        ApiResponse response = userRestService.sendJoinRequest(user, username, body);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
     @PostMapping("/send-invitation-letter-to-email")
     public ResponseEntity<ApiResponse> sendInvitationLetterToEmail(@RequestParam("email") String email, @CurrentUser Users user) throws MessagingException {
-        ApiResponse invite = userRestService.sendInvitationLetterToEmail(email, user);
-        return ResponseEntity.status(invite.getHttpStatus()).body(invite);
+        ApiResponse response = userRestService.sendInvitationLetterToEmail(email, user);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
     @PostMapping("/accept-invitation")
     public ResponseEntity<ApiResponse> addUserToContactOrGroup(@RequestParam("userId") Long userId,
-                                                        @RequestParam("groupId")Long groupId,
-                                                        @RequestParam("save")boolean save,
-                                                        @CurrentUser Users user) {
-        ApiResponse addUserToContactOrGroup = userRestService.addUserToContactOrGroup(userId, groupId, save, user);
-        return ResponseEntity.status(addUserToContactOrGroup.getHttpStatus()).body(addUserToContactOrGroup);
+                                                                @RequestParam("groupId")Long groupId,
+                                                                @RequestParam("save")boolean save,
+                                                                @CurrentUser Users user) {
+        ApiResponse response = userRestService.addUserToContactOrGroup(userId, groupId, save, user);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
+    }
+
+    @PostMapping("/update-contact/{contactId}")
+    public ResponseEntity<ApiResponse> updateUserContact(@PathVariable Long contactId,
+                                                         @RequestParam("groupId")Long groupId,
+                                                         @RequestParam("save")boolean save,
+                                                         @CurrentUser Users user) {
+        ApiResponse response = userRestService.updateUserContact(contactId, groupId, save, user);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
     @DeleteMapping("/delete/invitation/{id}")
     public ResponseEntity<ApiResponse> deleteInvitation(@PathVariable Long id, @CurrentUser Users user) {
-        ApiResponse delete = userRestService.deleteInvitation(id, user);
-        return ResponseEntity.status(delete.getHttpStatus()).body(delete);
+        ApiResponse response = userRestService.deleteInvitation(id, user);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
     @GetMapping("/profile-info")
@@ -99,13 +105,13 @@ public class UserRestController {
 
     @PutMapping("/update/profile")
     public ResponseEntity<ApiResponse> updateProfile(@RequestBody ProfileDto profileDto, @CurrentUser Users user) {
-        ApiResponse apiResponse = userRestService.updateProfile(profileDto, user);
-        return ResponseEntity.status(apiResponse.getHttpStatus()).body(apiResponse);
+        ApiResponse response = userRestService.updateProfile(profileDto, user);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
     @PutMapping("/update/password")
     public ResponseEntity<ApiResponse> updatePassword(@RequestBody PasswordDto passwordDto, @CurrentUser Users user){
-        ApiResponse apiResponse = userRestService.updatePassword(passwordDto, user);
-        return ResponseEntity.status(apiResponse.getHttpStatus()).body(apiResponse);
+        ApiResponse response = userRestService.updatePassword(passwordDto, user);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 }

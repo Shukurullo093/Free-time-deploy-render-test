@@ -1,9 +1,6 @@
 package com.time.demo.service;
 
-import com.time.demo.dto.ApiResponse;
-import com.time.demo.dto.PasswordDto;
-import com.time.demo.dto.ProfileDto;
-import com.time.demo.dto.UserDto;
+import com.time.demo.dto.*;
 import com.time.demo.entity.Users;
 import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Service;
@@ -16,7 +13,7 @@ import java.util.List;
 public interface UserRestService {
     ApiResponse uploadImage(MultipartFile image, String email) throws IOException;
 
-    ApiResponse inviteFriendByUsername(Users user, String username, String body);
+    ApiResponse sendJoinRequest(Users user, String username, String body);
 
     ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException;
 
@@ -35,4 +32,6 @@ public interface UserRestService {
     ApiResponse createGroup(Users user, String name, String category);
 
     ApiResponse deleteGroup(Users user, long groupId);
+
+    ApiResponse updateUserContact(Long contactId, Long groupId, boolean save, Users user);
 }

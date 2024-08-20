@@ -9,15 +9,14 @@
     -test api with postman
     -security & jwt
     -test api with ngrok & postman
-
     -create contacts entity, repository
     -invite friend (if they are already friend, he cannot send invitation)
     -accept invitation
     -delete invitation by owner
-
     -get user data with token
-
     -notification dto
+    create/update/delete group
+    add/update/delete contact
 
 
     cinelef353@chaladas.com EDwD22#@dd

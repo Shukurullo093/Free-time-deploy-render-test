@@ -34,13 +34,13 @@ public class AuthServiceImpl extends AbsGeneral implements AuthService {
     private String host;
 
     @Override
-    public ApiResponse register(RegisterDto registerDto) throws MessagingException {
+    public AuthResponse register(RegisterDto registerDto) throws MessagingException {
         if (!isValidPassword(registerDto.getPassword()))
-            return new ApiResponse("Yaroqsiz parol", HttpStatus.BAD_REQUEST);
+            return new AuthResponse("Yaroqsiz parol", HttpStatus.BAD_REQUEST);
         if (userRepository.existsByUsername1(registerDto.getUsername()))
-            return new ApiResponse("Bu foydalanuvchi nomi allaqachon foydalanilgan", HttpStatus.BAD_REQUEST);
+            return new AuthResponse("Bu foydalanuvchi nomi allaqachon foydalanilgan", HttpStatus.BAD_REQUEST);
         if (isValidUserName(registerDto.getUsername()))
-            return new ApiResponse("Yaroqsiz foydalanuvchi nomi", HttpStatus.BAD_REQUEST);
+            return new AuthResponse("Yaroqsiz foydalanuvchi nomi", HttpStatus.BAD_REQUEST);
         Optional<Users> usersOptional = userRepository.findByEmail(registerDto.getEmail());
         if (usersOptional.isEmpty()) {
             Users users = new Users();
@@ -56,11 +56,11 @@ public class AuthServiceImpl extends AbsGeneral implements AuthService {
             users.setEmailCode(otp);
 
             if (!sendVerificationCode(registerDto.getEmail(), otp)) {
-                return new ApiResponse("Email manzil topilmadi", HttpStatus.BAD_REQUEST);
+                return new AuthResponse("Email manzil topilmadi", HttpStatus.BAD_REQUEST);
             }
 
             userRepository.save(users);
-            return new ApiResponse("Foydalanuvchi muvaffaqqiyatli ro'yhatdan o'tdi", HttpStatus.CREATED);
+            return new AuthResponse("Foydalanuvchi muvaffaqqiyatli ro'yhatdan o'tdi", HttpStatus.CREATED);
         } else {
             Users users = usersOptional.get();
             if (!users.isEnabled() && users.getEmailCode() != null) {
@@ -73,17 +73,17 @@ public class AuthServiceImpl extends AbsGeneral implements AuthService {
                     throw new RuntimeException(e);
                 }
                 userRepository.save(users);
-                return new ApiResponse("Emailga tasdilash kodi jo'natildi", HttpStatus.OK);
+                return new AuthResponse("Emailga tasdilash kodi jo'natildi", HttpStatus.OK);
             }
-            return new ApiResponse("Bu email allaqachon ro'yhatdan o'tgan", HttpStatus.CONFLICT);
+            return new AuthResponse("Bu email allaqachon ro'yhatdan o'tgan", HttpStatus.CONFLICT);
         }
     }
 
     @Override
-    public ApiResponse verification(VerificationDto verificationDto) {
+    public AuthResponse verification(VerificationDto verificationDto) {
         Optional<Users> usersOptional = userRepository.findByEmail(verificationDto.getEmail());
         if (usersOptional.isEmpty())
-            return new ApiResponse("Bunday foydalanuvchi topilmadi", HttpStatus.NOT_FOUND);
+            return new AuthResponse("Bunday foydalanuvchi topilmadi", HttpStatus.NOT_FOUND);
         Users users = usersOptional.get();
         if (!users.isEnabled() && users.getEmailCode() != null) {
             if (users.getEmailCode().equals(verificationDto.getCode())) {
@@ -95,15 +95,15 @@ public class AuthServiceImpl extends AbsGeneral implements AuthService {
                         .orElseThrow();
                 var jwtToken = jwtService.generateToken(user);
 
-                return new ApiResponse("Email tasdiqlandi", HttpStatus.OK, getUserDtoFromUser(user, jwtToken));
+                return new AuthResponse("Email tasdiqlandi", HttpStatus.OK, getUserDtoFromUser(user, jwtToken));
             } else
-                return new ApiResponse("Tasdiqlash kodi xato", HttpStatus.BAD_REQUEST);
+                return new AuthResponse("Tasdiqlash kodi xato", HttpStatus.BAD_REQUEST);
         }
-        return new ApiResponse("Email allaqachon tasdiqlangan", HttpStatus.ALREADY_REPORTED);
+        return new AuthResponse("Email allaqachon tasdiqlangan", HttpStatus.ALREADY_REPORTED);
     }
 
     @Override
-    public ApiResponse login(LoginDto loginDto) {
+    public AuthResponse login(LoginDto loginDto) {
         Optional<Users> usersOptional = userRepository.findByEmail(loginDto.getEmail());
         if (usersOptional.isPresent()) {
             Users users = usersOptional.get();
@@ -116,19 +116,19 @@ public class AuthServiceImpl extends AbsGeneral implements AuthService {
                     throw new RuntimeException(e);
                 }
                 userRepository.save(users);
-                return new ApiResponse("Email tasdiqlanmagan, Emailga tasdiqlash kodi yuborildi", HttpStatus.FORBIDDEN);
+                return new AuthResponse("Email tasdiqlanmagan, Emailga tasdiqlash kodi yuborildi", HttpStatus.FORBIDDEN);
             }
             if (passwordEncoder.matches(loginDto.getPassword(), users.getPassword())) {
                 var user = userRepository.findByEmail(users.getEmail())
                         .orElseThrow();
                 var jwtToken = jwtService.generateToken(user);
 
-                return new ApiResponse("Muvaffaqqiyatli tizimga kirdingiz", HttpStatus.OK, getUserDtoFromUser(user, jwtToken));
+                return new AuthResponse("Muvaffaqqiyatli tizimga kirdingiz", HttpStatus.OK, getUserDtoFromUser(user, jwtToken));
             } else {
-                return new ApiResponse("Email yoki Parol xato", HttpStatus.BAD_REQUEST);
+                return new AuthResponse("Email yoki Parol xato", HttpStatus.BAD_REQUEST);
             }
         }
-        return new ApiResponse("Ushbu emailli foydalanuvchi topilmadi", HttpStatus.NOT_FOUND);
+        return new AuthResponse("Ushbu emailli foydalanuvchi topilmadi", HttpStatus.NOT_FOUND);
     }
 
     private boolean sendVerificationCode(String to, String otp) throws MessagingException {

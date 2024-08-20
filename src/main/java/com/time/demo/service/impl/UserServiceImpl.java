@@ -4,6 +4,7 @@ import com.time.demo.dto.ContactsDto;
 import com.time.demo.dto.ProfileDto;
 import com.time.demo.entity.Contacts;
 import com.time.demo.entity.Users;
+import com.time.demo.entity.enums.ContactType;
 import com.time.demo.repository.ContactsRepository;
 import com.time.demo.repository.UserRepository;
 import com.time.demo.service.UserService;
@@ -40,11 +41,13 @@ public class UserServiceImpl extends AbsGeneral implements UserService {
                     contact.getFirstName(),
                     contact.getLastName(),
                     contact.getUsername1(),
-                    contact.getEmail(),
-                    contact.getPhone(),
+                    contacts.getGroup() != null ? contacts.getGroup().getName() : null,
+//                    contact.getEmail(),
+//                    contact.getPhone(),
                     avatarLink,
                     getFormattedDate(contacts.getCreatedAt(), "dd/MM/yyyy HH:mm"),
-                    contacts.getContactType(),
+                    contacts.getContactType() != ContactType.ONLY_GROUP,
+//                    contacts.getContactType(),
                     isSender));
         }
         map.put("contactsList", contactsDtoList);
@@ -69,3 +72,4 @@ public class UserServiceImpl extends AbsGeneral implements UserService {
         return map;
     }
 }
+
