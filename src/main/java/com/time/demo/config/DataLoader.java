@@ -34,38 +34,19 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        List<Users> usersList=new ArrayList<>(Arrays.asList(
+                new Users("userA", "userA", "userA123", "userA@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true),
+                new Users("userB", "userB", "userB123", "userB@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true),
+                new Users("userC", "userC", "userC123", "userC@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true),
+                new Users("userD", "userD", "userD123", "userD@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true),
+                new Users("userE", "userE", "userE123", "userE@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true),
+                new Users("userF", "userF", "userF123", "userF@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true),
+                new Users("userG", "userG", "userG123", "userG@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true),
+                new Users("userH", "userH", "userH123", "userH@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true)
+        ));
+
         if (initMode.equals("always")) {
-            userRepository.saveAll(Arrays.asList(
-                    new Users(
-                    "userA",
-                    "userA",
-                    "userA123",
-                    "userA@gmail.com",
-                    passwordEncoder.encode("P@ssw0rd"),
-                    null,
-                    null,
-                    null,
-                    null,
-                    USER,
-                    true
-                ),
-                    new Users(
-                    "userB",
-                    "userB",
-                    "userB123",
-                    "userB@gmail.com",
-                    passwordEncoder.encode("P@ssw0rd"),
-                    null,
-                    null,
-                    null,
-                    null,
-                    USER,
-                    true)));
-//            Group group=new Group();
-//            group.setCategory(GroupCategory.WORK);
-//            group.setName("130-20-group");
-//            group.setCreatedBy(1L);
-//            groupRepository.save(group);
+            userRepository.saveAll(usersList);
         }
     }
 }

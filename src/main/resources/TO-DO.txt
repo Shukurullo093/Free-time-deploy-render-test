@@ -15,8 +15,10 @@
     -delete invitation by owner
     -get user data with token
     -notification dto
+
     create/update/delete group
     add/update/delete contact
+    leave group
 
 
     cinelef353@chaladas.com EDwD22#@dd

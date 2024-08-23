@@ -30,7 +30,7 @@ public class TestController extends AbsGeneral {
     public @ResponseBody String test() {
         StringBuilder stringBuilder = new StringBuilder();
         List<Users> usersList = userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
-        stringBuilder.append("<h2><b>Users List: </b></h2>");
+        stringBuilder.append("<h2><b>Users List: </b></h2><h4>the password of all users is P@ssw0rd</h4>");
         stringBuilder.append("<table style='border-collapse: collapse;'><tr>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>ID</th>" +
                 "<th style='border: 2px solid black; font-weight: bold; padding: 5px;'>NAME</th>" +

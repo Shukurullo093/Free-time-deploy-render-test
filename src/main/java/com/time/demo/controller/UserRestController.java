@@ -63,7 +63,8 @@ public class UserRestController {
     }
 
     @PostMapping("/invite-friend-by-username")
-    public ResponseEntity<ApiResponse> sendJoinRequest(@CurrentUser Users user, @RequestParam("username") String username, @RequestParam("body") String body) {
+    public ResponseEntity<ApiResponse> sendJoinRequest(@CurrentUser Users user, @RequestParam("username") String username,
+                                                       @RequestParam("message") String body) {
         ApiResponse response = userRestService.sendJoinRequest(user, username, body);
         return ResponseEntity.status(response.getResponseCode()).body(response);
     }
