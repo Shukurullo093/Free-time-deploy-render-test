@@ -45,8 +45,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**", "/", "user/avatar/**").permitAll()
                         .requestMatchers(
                                 "/user/upload/image", "/user/invite-friend-by-username",
-                                "/api/contacts", "/api/dashboard", "/user/send-invitation-letter-to-email",
-                                "/user/get-users-by-username/**", "/user/accept-invitation", "/user/profile-info",
+                                "/api/contacts", "/api/dashboard", "/api/groups",
+                                "/user/send-invitation-letter-to-email",
+                                "/user/get-users-by-username", "/user/accept-invitation", "/user/profile-info",
                                 "/user/update/**", "/api/**", "/user/create-group", "/user/delete-group/")
                         .hasAnyRole(ADMIN.name(), USER.name())
                         .anyRequest().authenticated())

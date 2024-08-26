@@ -1,11 +1,14 @@
 package com.time.demo.service.impl;
 
 import com.time.demo.dto.ContactsDto;
+import com.time.demo.dto.GroupDto;
 import com.time.demo.dto.ProfileDto;
 import com.time.demo.entity.Contacts;
+import com.time.demo.entity.Group;
 import com.time.demo.entity.Users;
 import com.time.demo.entity.enums.ContactType;
 import com.time.demo.repository.ContactsRepository;
+import com.time.demo.repository.GroupRepository;
 import com.time.demo.repository.UserRepository;
 import com.time.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import java.util.*;
 public class UserServiceImpl extends AbsGeneral implements UserService {
     private final UserRepository userRepository;
     private final ContactsRepository contactsRepository;
+    private final GroupRepository groupRepository;
 
     @Override
     public Map<String, List<ContactsDto>> getContactsList(Users user) {
@@ -69,6 +73,24 @@ public class UserServiceImpl extends AbsGeneral implements UserService {
             );
             map.put("user", profileDto);
         }
+        return map;
+    }
+
+    @Override
+    public Map<String, List<GroupDto>> getGroupsList(Users user) {
+        Map<String, List<GroupDto>> map = new HashMap<>();
+        List<Group> groupList = groupRepository.findAllByCreatedBy(user.getId());
+        List<GroupDto> groupDtos=new ArrayList<>();
+        for (Group group : groupList) {
+            groupDtos.add(new GroupDto(
+                    group.getId(),
+                    group.getName(),
+                    group.getCategory(),
+                    group.getContacts().size(),
+                    getFormattedDate(group.getCreatedAt(), "dd/MM/yyyy")
+            ));
+        }
+        map.put("groups", groupDtos);
         return map;
     }
 }

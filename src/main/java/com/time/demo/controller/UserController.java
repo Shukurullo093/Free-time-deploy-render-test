@@ -21,8 +21,12 @@ public class UserController {
 
     @GetMapping("/dashboard")
     public ResponseEntity<?> dashboard(@CurrentUser Users user) {
-
         return ResponseEntity.ok("");
+    }
+
+    @GetMapping("/groups")
+    public Map<String, List<GroupDto>> getGroupsList(@CurrentUser Users user) {
+        return userService.getGroupsList(user);
     }
 
     @GetMapping("/contacts")

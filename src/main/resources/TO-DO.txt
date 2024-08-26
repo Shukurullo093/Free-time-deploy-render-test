@@ -19,6 +19,9 @@
     create/update/delete group
     add/update/delete contact
     leave group
+    add group/contact type fields to contact entity for second user
+    get group list in group page
+
 
 
     cinelef353@chaladas.com EDwD22#@dd

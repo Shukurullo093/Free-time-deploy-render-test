@@ -45,8 +45,8 @@ public class DataLoader implements ApplicationRunner {
                 new Users("userH", "userH", "userH123", "userH@gmail.com", passwordEncoder.encode("P@ssw0rd"), null, null, null, null, USER, true)
         ));
 
-        if (initMode.equals("always")) {
-            userRepository.saveAll(usersList);
-        }
+//        if (initMode.equals("always")) {
+//            userRepository.saveAll(usersList);
+//        }
     }
 }

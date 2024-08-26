@@ -1,5 +1,6 @@
 package com.time.demo.repository;
 
+import com.time.demo.dto.ProfileDto1;
 import com.time.demo.entity.Users;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
