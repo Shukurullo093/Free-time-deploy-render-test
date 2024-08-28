@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -170,10 +169,10 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
     }
 
     @Override
-    public List<UserDto> getUsersByUsername(String username) {
+    public List<UserDto> getUsersByUsername(String username, Users user) {
         Pageable pageable = PageRequest.of(0, 5);
         if (username != null) {
-            List<Users> allByUsernameWithQuery = userRepository.findAllByUsernameWithQuery(username, pageable);
+            List<Users> allByUsernameWithQuery = userRepository.findAllByUsernameWithQuery(username, user.getUsername1(), pageable);
             return getUserDtoListFromUsersList(allByUsernameWithQuery);
         }
         return null;

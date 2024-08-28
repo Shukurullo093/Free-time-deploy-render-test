@@ -39,7 +39,7 @@ public class JwtService {
 //                .setSubject(userDetails.getUsername())
                 .setSubject(encodeEmail(userDetails.getUsername()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000 * 5)) // 1 hour * 5
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -7,6 +7,7 @@ import com.time.demo.repository.UserImageRepository;
 import com.time.demo.security.CurrentUser;
 import com.time.demo.service.UserRestService;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +29,8 @@ public class UserRestController {
     private final UserImageRepository userImageRepository;
 
     @PostMapping("/upload/image")
-    public ApiResponse uploadImage(@RequestParam("image") MultipartFile image, @CurrentUser Users users) throws IOException {
+    public ApiResponse uploadImage(@RequestParam("image") MultipartFile image,
+                                   @CurrentUser Users users) throws IOException {
         return userRestService.uploadImage(image, users.getEmail());
     }
 
@@ -58,14 +60,16 @@ public class UserRestController {
     }
 
     @GetMapping("/get-users-by-username/{username}")
-    public List<UserDto> getUsersByUsername(@PathVariable String username) {
-        return userRestService.getUsersByUsername(username);
+    public List<UserDto> getUsersByUsername(@PathVariable String username, @CurrentUser Users user) {
+        return userRestService.getUsersByUsername(username, user);
     }
 
+    // https://medium.com/@tericcabrel/validate-request-body-and-parameter-in-spring-boot-53ca77f97fe9
     @PostMapping("/invite-friend-by-username")
-    public ResponseEntity<ApiResponse> sendJoinRequest(@CurrentUser Users user, @RequestParam("username") String username,
-                                                       @RequestParam("message") String body) {
-        ApiResponse response = userRestService.sendJoinRequest(user, username, body);
+    public ResponseEntity<ApiResponse> sendJoinRequest(@CurrentUser Users user,
+                                                       @Valid @RequestBody InviteDto inviteDto) {
+        System.out.println(inviteDto);
+        ApiResponse response = userRestService.sendJoinRequest(user, inviteDto.getUsername(), inviteDto.getMessage());
         return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 

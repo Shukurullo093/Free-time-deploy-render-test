@@ -52,6 +52,11 @@ public class SecurityConfiguration {
                         .hasAnyRole(ADMIN.name(), USER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/login")
+                        .deleteCookies("Authorization")
+                        .invalidateHttpSession(true))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

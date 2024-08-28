@@ -1,9 +1,6 @@
 package com.time.demo.controller;
 
-import com.time.demo.dto.AuthResponse;
-import com.time.demo.dto.LoginDto;
-import com.time.demo.dto.RegisterDto;
-import com.time.demo.dto.VerificationDto;
+import com.time.demo.dto.*;
 import com.time.demo.service.AuthService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;

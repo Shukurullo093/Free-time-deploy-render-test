@@ -17,7 +17,7 @@ public interface UserRestService {
 
     ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException;
 
-    List<UserDto> getUsersByUsername(String username);
+    List<UserDto> getUsersByUsername(String username, Users user);
 
     ApiResponse addUserToContactOrGroup(Long userId, Long groupId, boolean save, Users user);
 

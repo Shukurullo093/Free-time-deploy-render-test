@@ -86,7 +86,7 @@ public class UserServiceImpl extends AbsGeneral implements UserService {
                     group.getId(),
                     group.getName(),
                     group.getCategory(),
-                    group.getContacts().size(),
+                    0,
                     getFormattedDate(group.getCreatedAt(), "dd/MM/yyyy")
             ));
         }

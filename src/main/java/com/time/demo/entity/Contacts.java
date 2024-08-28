@@ -16,9 +16,16 @@ public class Contacts extends AbsUserEntity {
     private Users contact;
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
+//    @JoinColumn(name = "group_id")
     private Group group;
 
     @Enumerated(value = EnumType.STRING)
     private ContactType contactType;
+
+//    @ManyToOne
+////    @JoinColumn(name = "group_id")
+//    private Group group2;
+//
+//    @Enumerated(value = EnumType.STRING)
+//    private ContactType contactType2;
 }
