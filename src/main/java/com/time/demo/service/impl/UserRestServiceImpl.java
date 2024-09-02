@@ -5,6 +5,7 @@ import com.time.demo.entity.*;
 import com.time.demo.entity.enums.ContactType;
 import com.time.demo.entity.enums.GroupCategory;
 import com.time.demo.entity.enums.MessageType;
+import com.time.demo.entity.templates.AbsMainLongEntity;
 import com.time.demo.repository.*;
 import com.time.demo.service.UserRestService;
 import jakarta.mail.MessagingException;
@@ -71,8 +72,8 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
     @Transactional
     @Override
     public ApiResponse sendJoinRequest(Users user, String username, String body) {
-        if (contactsRepository.existsByContactUsername1AndCreatedBy(username, user.getId()))
-            return new ApiResponse("Ushbu foydalanuvchi bilan allaqachon bog'langansiz", 200);
+//        if (contactsRepository.existsByContactUsername1AndCreatedBy(username, user.getId()))
+//            return new ApiResponse("Ushbu foydalanuvchi bilan allaqachon bog'langansiz", 200);
 
         Optional<Users> byUsername = userRepository.findByUsername1(username);
         if (byUsername.isPresent() && byUsername.get().isEnabled()) {
@@ -180,16 +181,36 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
 
     @Override
     public ApiResponse addUserToContactOrGroup(Long userId, Long groupId, boolean save, Users user) {
-        if (!groupRepository.existsByIdAndCreatedBy(groupId, user.getId()))
-            return new ApiResponse("Sizda guruhga foydalanuvchi qo'shishga ruxsat yo'q", 403);
+//        if (!groupRepository.existsByIdAndCreatedBy(groupId, user.getId()))
+//            return new ApiResponse("Sizda guruhga foydalanuvchi qo'shishga ruxsat yo'q", 403);
+
         Optional<Users> usersOptional = userRepository.findById(userId);
         if (usersOptional.isEmpty()) {
             return new ApiResponse("Fodalanuvchi topilmadi", 404);
         }
-        Contacts contact = new Contacts();
-        contact.setContact(usersOptional.get());
-        saveContact(groupId, save, contact);
-        return new ApiResponse("Contact saqlandi", 200);
+        //  owner   user
+        Optional<Contacts> ownerContact = contactsRepository.findByContactIdAndCreatedBy(userId, user.getId());
+        Optional<Contacts> userContact = contactsRepository.findByContactIdAndCreatedBy(user.getId(), userId);
+        if (ownerContact.isEmpty()){
+            Contacts contact;
+            if (userContact.isPresent()) {
+                contact = userContact.get();
+                saveContact(groupId, save, contact, false);
+            }
+            else {
+                contact = new Contacts();
+                contact.setContactId(userId);
+                saveContact(groupId, save, contact, true);
+            }
+            return new ApiResponse("Contact saqlandi", 200);
+        }
+        return new ApiResponse("Allaqachon contact saqlangan", 409);
+
+//        Contacts contact = new Contacts();
+//        contact.setContact(usersOptional.get());
+//        saveContact(groupId, save, contact);
+
+//        return new ApiResponse("Contact saqlandi", 200);
     }
 
     @Override
@@ -298,7 +319,7 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
         if (contactsOptional.isPresent()) {
             Contacts contact = contactsOptional.get();
             if (contact.getCreatedBy().equals(user.getId())) {
-                saveContact(groupId, save, contact);
+                saveContact(groupId, save, contact, true);
                 return new ApiResponse("Contact ma'lumotlari yangilandi", 200);
             }
             return new ApiResponse("Contactni yangilashga ruxsat yo'q", 403);
@@ -306,16 +327,29 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
         return new ApiResponse("Contact ma'lumotlari topilmadi", 404);
     }
 
-    private void saveContact(Long groupId, boolean save, Contacts contact) {
+    private void saveContact(Long groupId, boolean save, Contacts contact, boolean isOwner) {
         Optional<Group> groupOptional = groupRepository.findById(groupId);
-        if (save && groupId > 0) {
-            contact.setGroup(groupOptional.orElse(null));
-            contact.setContactType(ContactType.GROUP_AND_CONTACT);
-        } else if (save && groupId == 0) {
-            contact.setContactType(ContactType.ONLY_CONTACT);
-        } else {
-            contact.setGroup(groupOptional.orElse(null));
-            contact.setContactType(ContactType.ONLY_GROUP);
+        if (isOwner) {
+            if (save && groupId > 0) {
+                contact.setGroupId1(groupOptional.map(AbsMainLongEntity::getId).orElse(0L));
+                contact.setContactType1(ContactType.GROUP_AND_CONTACT);
+            } else if (save && groupId == 0) {
+                contact.setContactType1(ContactType.ONLY_CONTACT);
+            } else {
+                contact.setGroupId1(groupOptional.map(AbsMainLongEntity::getId).orElse(0L));
+                contact.setContactType1(ContactType.ONLY_GROUP);
+            }
+        }
+        else {
+            if (save && groupId > 0) {
+                contact.setGroupId2(groupOptional.map(AbsMainLongEntity::getId).orElse(0L));
+                contact.setContactType2(ContactType.GROUP_AND_CONTACT);
+            } else if (save && groupId == 0) {
+                contact.setContactType2(ContactType.ONLY_CONTACT);
+            } else {
+                contact.setGroupId2(groupOptional.map(AbsMainLongEntity::getId).orElse(0L));
+                contact.setContactType2(ContactType.ONLY_GROUP);
+            }
         }
         contactsRepository.save(contact);
     }

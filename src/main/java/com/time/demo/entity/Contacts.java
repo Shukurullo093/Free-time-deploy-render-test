@@ -5,27 +5,23 @@ import com.time.demo.entity.templates.AbsUserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "contacts")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Contacts extends AbsUserEntity {
-    @ManyToOne
-    private Users contact;
+    private long contactId;
 
-    @ManyToOne
-//    @JoinColumn(name = "group_id")
-    private Group group;
+    private long groupId1;
 
     @Enumerated(value = EnumType.STRING)
-    private ContactType contactType;
+    private ContactType contactType1;
 
-//    @ManyToOne
-////    @JoinColumn(name = "group_id")
-//    private Group group2;
-//
-//    @Enumerated(value = EnumType.STRING)
-//    private ContactType contactType2;
+    private long groupId2;
+
+    @Enumerated(value = EnumType.STRING)
+    private ContactType contactType2;
 }
+

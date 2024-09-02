@@ -26,7 +26,4 @@
     -add message table to test controller
     -handle token expired exception
     not found(404) page
-
-
-
-    cinelef353@chaladas.com EDwD22#@dd
+    -dto projection

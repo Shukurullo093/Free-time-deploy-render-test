@@ -32,25 +32,25 @@ public class UserServiceImpl extends AbsGeneral implements UserService {
             Users contact;
             boolean isSender;
             if (contacts.getCreatedBy().equals(user.getId())) {
-                contact = contacts.getContact();
+//                contact = contacts.getContactId();
                 isSender = true;
             } else {
                 contact = userRepository.findById(contacts.getCreatedBy()).get();
                 isSender = false;
             }
 
-            String avatarLink = contact.getImage() != null ? "localhost:8080/user/avatar/" + contact.getImage().getHashId() : null;
+//            String avatarLink = contact.getImage() != null ? "localhost:8080/user/avatar/" + contact.getImage().getHashId() : null;
             contactsDtoList.add(new ContactsDto(
-                    contact.getId(),
-                    contact.getFirstName(),
-                    contact.getLastName(),
-                    contact.getUsername1(),
-                    contacts.getGroup() != null ? contacts.getGroup().getName() : null,
+                    0L,
+                    "contact.getFirstName()",
+                    "contact.getLastName()",
+                    "contact.getUsername1()",
+                    "contacts.getGroup() != null ? contacts.getGroup().getName() : null",
 //                    contact.getEmail(),
 //                    contact.getPhone(),
-                    avatarLink,
+                    "avatarLink",
                     getFormattedDate(contacts.getCreatedAt(), "dd/MM/yyyy HH:mm"),
-                    contacts.getContactType() != ContactType.ONLY_GROUP,
+                    contacts.getContactType1() != ContactType.ONLY_GROUP,
 //                    contacts.getContactType(),
                     isSender));
         }

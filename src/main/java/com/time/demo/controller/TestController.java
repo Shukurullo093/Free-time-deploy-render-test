@@ -22,6 +22,8 @@ public class TestController extends AbsGeneral {
 
     @GetMapping()
     public @ResponseBody String test() {
+//        userRepository.findAllUsers().forEach(userDtoInterface -> System.out.println(userDtoInterface.toString()));
+
         StringBuilder stringBuilder = new StringBuilder();
         List<Users> usersList = userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
         stringBuilder.append("<h2><b>Users List: </b></h2><h4>the password of all users is P@ssw0rd</h4>");
@@ -47,7 +49,7 @@ public class TestController extends AbsGeneral {
                     .append(usersList.get(j).getImage() != null ? usersList.get(j).getImage().getId() : null).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(usersList.get(j).isEnabled()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(usersList.get(j).getEmailCode()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(getFormattedDate(usersList.get(j).getCreatedAt(), "dd/MM/yyyy HH:mm")).append("</td>");
+                    .append(getFormattedDate(usersList.get(j).getCreatedAt(), "dd/MM/yyyy hh:mm")).append("</td>");
         }
         stringBuilder.append("</tr></table>");
 
@@ -105,13 +107,13 @@ public class TestController extends AbsGeneral {
             stringBuilder.append("<tr><td style='border: 1px dashed black; padding: 1px 3px;'>")
                     .append(contactsList.get(j).getId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(contactsList.get(j).getCreatedBy()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(contactsList.get(j).getContact().getId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(contactsList.get(j).getGroup().getId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(contactsList.get(j).getContactType()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(contactsList.get(j).getGroup().getId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(contactsList.get(j).getContactType()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(getFormattedDate(contactsList.get(j).getCreatedAt(), "dd/MM/yyyy HH:mm")).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(getFormattedDate(contactsList.get(j).getUpdatedAt(), "dd/MM/yyyy HH:mm")).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(contactsList.get(j).getContactId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(contactsList.get(j).getGroupId1()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(contactsList.get(j).getContactType1()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(contactsList.get(j).getGroupId2()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(contactsList.get(j).getContactType2()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(getFormattedDate(contactsList.get(j).getCreatedAt(), "dd/MM/yyyy hh:mm")).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
+                    .append(getFormattedDate(contactsList.get(j).getUpdatedAt(), "dd/MM/yyyy hh:mm")).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(contactsList.get(j).getUpdatedBy()).append("</td>");
         }
         stringBuilder.append("</tr></table>");
@@ -134,7 +136,7 @@ public class TestController extends AbsGeneral {
                     .append(messageList.get(j).getType()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(messageList.get(j).getOriginId()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
                     .append(messageList.get(j).isRead()).append("</td><td style='border: 1px dashed black; padding: 1px 3px; '>")
-                    .append(getFormattedDate(messageList.get(j).getCreatedAt(), "dd/MM/yyyy HH:mm")).append("</td>");
+                    .append(getFormattedDate(messageList.get(j).getCreatedAt(), "dd/MM/yyyy hh:mm")).append("</td>");
         }
         stringBuilder.append("</tr></table>");
 

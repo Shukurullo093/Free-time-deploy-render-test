@@ -1,5 +1,6 @@
 package com.time.demo.repository;
 
+import com.time.demo.dto.UserDtoInterface;
 import com.time.demo.entity.Users;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,8 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     List<Users> findAllByUsernameWithQuery(@Param("username") String username, @Param("owner") String owner, Pageable pageable);
 
 //    List<Users> findAllByUsername1Contains(String username, Pageable pageable);
+
+    @Query(value = "SELECT u.first_name AS firstName, u.last_name AS lastName, u.username1 AS username," +
+            "u.email AS email, u.phone AS phone, null, null FROM users u", nativeQuery = true)
+    List<UserDtoInterface> findAllUsers();
 }

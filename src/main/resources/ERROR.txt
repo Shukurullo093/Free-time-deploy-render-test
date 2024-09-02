@@ -10,3 +10,4 @@ UZ: user entityga userdetailsni implement qilganman shunda override qilingan get
 EN: As I implement UserDetails to user entity class, its methods implemented including getUsername, as a result conflicted the overridden getUsername() with getUsername of Data annotation, thus getUsername() method of Data annotation didn't work
 SOLUTION: I changed the name of username field to username1, username -> username1 then getUsername() -> getUsername1())
 ###
+*   url ga ruxsat berilmagan bo'lsa ham javob qaytayabdi

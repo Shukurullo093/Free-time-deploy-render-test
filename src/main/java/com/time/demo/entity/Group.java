@@ -23,11 +23,11 @@ public class Group extends AbsUserEntity {
     @Enumerated(value = EnumType.STRING)
     private GroupCategory category;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
-    private List<Contacts> contacts;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
+//    private List<Contacts> contacts;
 
-    public Group(String name, GroupCategory groupCategory) {
-        this.name=name;
-        this.category=groupCategory;
-    }
+//    public Group(String name, GroupCategory groupCategory) {
+//        this.name=name;
+//        this.category=groupCategory;
+//    }
 }

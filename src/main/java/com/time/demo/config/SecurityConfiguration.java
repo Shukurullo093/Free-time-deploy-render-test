@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,8 +22,8 @@ import static com.time.demo.entity.enums.Roles.*;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -42,15 +43,17 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/", "user/avatar/**").permitAll()
-                        .requestMatchers(
-                                "/user/upload/image", "/user/invite-friend-by-username",
-                                "/api/contacts", "/api/dashboard", "/api/groups",
-                                "/user/send-invitation-letter-to-email",
-                                "/user/get-users-by-username", "/user/accept-invitation", "/user/profile-info",
-                                "/user/update/**", "/api/**", "/user/create-group", "/user/delete-group/")
-                        .hasAnyRole(ADMIN.name(), USER.name())
-                        .anyRequest().authenticated())
+                                .requestMatchers("/auth/**", "/", "user/avatar/**").permitAll()
+                                .requestMatchers(
+                                        "/api/contacts", "/api/groups", "/api/profile",
+                                        "/user/upload/image", "/user/invite-friend-by-username",
+                                        "/user/send-invitation-letter-to-email",
+                                        "/user/get-users-by-username", "/user/accept-invitation", "/user/profile-info",
+                                        "/user/update/**", "/user/create-group", "/user/delete-group/")
+                                .hasAnyRole(USER.name())
+//                        .anyRequest().authenticated()
+                                .anyRequest().denyAll()
+                ) // .authenticated()
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
                         .logoutUrl("/logout")
@@ -77,5 +80,7 @@ public class SecurityConfiguration {
         return mailSender;
     }
 
+    //  https://www.baeldung.com/spring-security-method-security
     //  https://pabasararathnayake.medium.com/spring-boot-application-to-send-emails-using-smtp-protocol-c2616d7edf92
 }
+

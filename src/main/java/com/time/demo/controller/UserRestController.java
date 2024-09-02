@@ -48,8 +48,8 @@ public class UserRestController {
     }
 
     @PostMapping("/create-group")
-    public ResponseEntity<ApiResponse> createGroup(@CurrentUser Users user, @RequestParam("groupName")String name, @RequestParam("category")String category){
-        ApiResponse response = userRestService.createGroup(user, name, category);
+    public ResponseEntity<ApiResponse> createGroup(@CurrentUser Users user, @Valid @RequestBody CreateGroupDto createGroupDto){
+        ApiResponse response = userRestService.createGroup(user, createGroupDto.getName(), createGroupDto.getCategory());
         return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
@@ -68,7 +68,6 @@ public class UserRestController {
     @PostMapping("/invite-friend-by-username")
     public ResponseEntity<ApiResponse> sendJoinRequest(@CurrentUser Users user,
                                                        @Valid @RequestBody InviteDto inviteDto) {
-        System.out.println(inviteDto);
         ApiResponse response = userRestService.sendJoinRequest(user, inviteDto.getUsername(), inviteDto.getMessage());
         return ResponseEntity.status(response.getResponseCode()).body(response);
     }
@@ -80,11 +79,10 @@ public class UserRestController {
     }
 
     @PostMapping("/accept-invitation")
-    public ResponseEntity<ApiResponse> addUserToContactOrGroup(@RequestParam("userId") Long userId,
-                                                                @RequestParam("groupId")Long groupId,
-                                                                @RequestParam("save")boolean save,
+    public ResponseEntity<ApiResponse> addUserToContactOrGroup(@RequestBody AcceptInvitationDto invitationDto,
                                                                 @CurrentUser Users user) {
-        ApiResponse response = userRestService.addUserToContactOrGroup(userId, groupId, save, user);
+        ApiResponse response = userRestService.addUserToContactOrGroup(invitationDto.getUserId(), invitationDto.getGroupId(),
+                invitationDto.isSave(), user);
         return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
