@@ -16,9 +16,8 @@
     -get user data with token
     -notification dto
 
-    create/update/delete group
-    add/update/delete contact
-    leave group
+    -create/update/-delete group
+    -add/update/-delete contact
     -add group/contact type fields to contact entity for second user
     -get group list in group page
     -filter get users by username (without current user)

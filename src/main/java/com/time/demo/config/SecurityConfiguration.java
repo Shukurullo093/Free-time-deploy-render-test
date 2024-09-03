@@ -47,9 +47,9 @@ public class SecurityConfiguration {
                                 .requestMatchers(
                                         "/api/contacts", "/api/groups", "/api/profile",
                                         "/user/upload/image", "/user/invite-friend-by-username",
-                                        "/user/send-invitation-letter-to-email",
+                                        "/user/send-invitation-letter-to-email", "/user/delete/contact/*",
                                         "/user/get-users-by-username", "/user/accept-invitation", "/user/profile-info",
-                                        "/user/update/**", "/user/create-group", "/user/delete-group/")
+                                        "/user/update/**", "/user/create-group", "/user/delete-group/*")
                                 .hasAnyRole(USER.name())
 //                        .anyRequest().authenticated()
                                 .anyRequest().denyAll()

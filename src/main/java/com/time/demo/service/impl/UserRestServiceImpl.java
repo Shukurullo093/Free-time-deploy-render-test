@@ -192,13 +192,12 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
 
         Optional<Contacts> ownerContact = contactsRepository.findByContactIdAndCreatedBy(usersOptional.get().getId(), user.getId());
         Optional<Contacts> userContact = contactsRepository.findByContactIdAndCreatedBy(user.getId(), usersOptional.get().getId());
-        if (ownerContact.isEmpty()){
+        if (ownerContact.isEmpty()) {
             Contacts contact;
             if (userContact.isPresent()) {
                 contact = userContact.get();
                 saveContact(groupId, save, contact, false);
-            }
-            else {
+            } else {
                 contact = new Contacts();
                 contact.setContactId(usersOptional.get().getId());
                 saveContact(groupId, save, contact, true);
@@ -219,16 +218,24 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
     }
 
     @Override
-    public ApiResponse deleteInvitation(Long id, Users user) {
+    public ApiResponse deleteContact(Long id, Users user) {
         Optional<Contacts> contactsOptional = contactsRepository.findById(id);
         if (contactsOptional.isPresent()) {
-            Contacts contacts = contactsOptional.get();
-            if (contacts.getCreatedBy().equals(user.getId())) {
+            Contacts contact = contactsOptional.get();
+            if (contact.getCreatedBy().equals(user.getId()) || contact.getContactId() == user.getId()) {
+                messageRepository.save(new Message(
+                        String.format("%s nomli foydalanuvchi bilan aloqa uzildi",
+                                contact.getCreatedBy().equals(user.getId()) ? user.getUsername1() :
+                                        userRepository.findById(contact.getContactId()).get().getUsername1()),
+                        MessageType.CONTACT_DELETE,
+                        false,
+                        contact.getCreatedBy().equals(user.getId()) ? user.getId() : contact.getContactId()
+                ));
                 contactsRepository.deleteById(id);
                 return new ApiResponse("Foydalanuvchi bilan aloqa uzildi", 200);
             }
         }
-        return new ApiResponse("Taklif havolasi topilmadi", 400);
+        return new ApiResponse("Contact ma'lumotlari topilmadi", 400);
     }
 
     @Override
@@ -300,6 +307,28 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
         if (groupOptional.isPresent()) {
             if (groupOptional.get().getCreatedBy().equals(user.getId())) {
                 //  delete all contacts related to group from contacts table
+                List<Contacts> allByGroupId1OrGroupId2 = contactsRepository.findAllByGroupId1OrGroupId2(groupId, groupId);
+                for (Contacts contact : allByGroupId1OrGroupId2) {
+                    if (user.getId().equals(contact.getCreatedBy())) {
+                        messageRepository.save(new Message(
+                                String.format("%s nomli foydalanuvchi bilan aloqa uzildi", user.getUsername1()),
+                                MessageType.CONTACT_DELETE,
+                                false,
+                                contact.getContactId()
+                        ));
+                        contactsRepository.delete(contact);
+                    } else {
+                        messageRepository.save(new Message(
+                                String.format("%s nomli foydalanuvchi bilan aloqa uzildi",
+                                        userRepository.findById(contact.getContactId()).get().getUsername1()),
+                                MessageType.CONTACT_DELETE,
+                                false,
+                                contact.getCreatedBy()
+                        ));
+                        contactsRepository.delete(contact);
+                    }
+                }
+
                 groupRepository.deleteById(groupId);
                 return new ApiResponse("Guruh o'chirildi", 200);
             }
@@ -334,8 +363,7 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
                 contact.setGroupId1(groupOptional.map(AbsMainLongEntity::getId).orElse(0L));
                 contact.setContactType1(ContactType.ONLY_GROUP);
             }
-        }
-        else {
+        } else {
             if (save && groupId > 0) {
                 contact.setGroupId2(groupOptional.map(AbsMainLongEntity::getId).orElse(0L));
                 contact.setContactType2(ContactType.GROUP_AND_CONTACT);

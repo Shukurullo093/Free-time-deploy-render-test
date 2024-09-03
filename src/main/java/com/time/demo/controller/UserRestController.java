@@ -95,9 +95,9 @@ public class UserRestController {
         return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
-    @DeleteMapping("/delete/invitation/{id}")
-    public ResponseEntity<ApiResponse> deleteInvitation(@PathVariable Long id, @CurrentUser Users user) {
-        ApiResponse response = userRestService.deleteInvitation(id, user);
+    @DeleteMapping("/delete/contact/{id}")
+    public ResponseEntity<ApiResponse> deleteContact(@PathVariable Long id, @CurrentUser Users user) {
+        ApiResponse response = userRestService.deleteContact(id, user);
         return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 

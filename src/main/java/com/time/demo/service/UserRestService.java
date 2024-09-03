@@ -24,7 +24,7 @@ public interface UserRestService {
 
     UserDto getProfileInfo(Users user);
 
-    ApiResponse deleteInvitation(Long id, Users user);
+    ApiResponse deleteContact(Long id, Users user);
 
     ApiResponse updateProfile(ProfileDto profileDto, Users user);
 
