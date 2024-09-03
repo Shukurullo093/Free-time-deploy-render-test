@@ -3,6 +3,7 @@ package com.time.demo.service;
 import com.time.demo.dto.*;
 import com.time.demo.entity.Users;
 import jakarta.mail.MessagingException;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +20,7 @@ public interface UserRestService {
 
     List<UserDto> getUsersByUsername(String username, Users user);
 
-    ApiResponse addUserToContactOrGroup(Long userId, Long groupId, boolean save, Users user);
+    ApiResponse addUserToContactOrGroup(@NotBlank String userId, Long groupId, boolean save, Users user);
 
     UserDto getProfileInfo(Users user);
 

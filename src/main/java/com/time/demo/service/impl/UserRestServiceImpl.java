@@ -90,74 +90,75 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
 
     @Override
     public ApiResponse sendInvitationLetterToEmail(String email, Users user) throws MessagingException {
-        String htmlMsg = "<!DOCTYPE html>\n" +
-                "<html lang=\"en\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <style>\n" +
-                "        body{\n" +
-                "            width: 100%;\n" +
-                "        }\n" +
-                "        body,\n" +
-                "        .container{\n" +
-                "            display: flex;\n" +
-                "            flex-direction: column;\n" +
-                "            align-items: center;\n" +
-                "            justify-content: center;\n" +
-                "            font-family: 'Times New Roman', Times, serif;\n" +
-                "            text-align: justify;\n" +
-                "        }\n" +
-                "        .accept{\n" +
-                "            background-color: #eaf2ed; \n" +
-                "            margin: 5px 0 0;\n" +
-                "            padding: 1rem;\n" +
-                "            border-top: 1px solid blueviolet;\n" +
-                "            display: flex;\n" +
-                "            justify-content: center;\n" +
-                "        }\n" +
-                "        a{\n" +
-                "            text-decoration: none;\n" +
-                "            background-color: green;\n" +
-                "            padding: 8px 30px;\n" +
-                "            border-radius: 13px;\n" +
-                "            font-size: 20px;\n" +
-                "            letter-spacing: 2px;\n" +
-                "            color: white;\n" +
-                "        }\n" +
-                "        .footer{\n" +
-                "            background-color: black;\n" +
-                "            text-align: justify;\n" +
-                "            color: white;\n" +
-                "            padding: 10px;\n" +
-                "            font-size: 16px;\n" +
-                "        }\n" +
-                "    </style>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "    <div class=\"container\" style=\"width: 550px; border-radius: 5px;\">\n" +
-                "        <img src=\"https://static.vecteezy.com/system/resources/previews/021/480/975/original/you-re-invited-calligraphy-text-with-elegant-golden-frame-hand-drawn-style-lettering-design-for-greeting-cards-and-invitations-vector.jpg\" width=\"540\" height=\"250\" style=\"margin-top: 5px;\">\n" +
-                "        <div class=\"user\" style=\"background-color: aliceblue; padding: 10px;\">\n" +
-                "            <h2 style=\"border-top: 1px solid blueviolet; padding-top: 1rem; margin: 0;\">Assalomu alaykum</h2><br>\n" +
-                "            <span style=\"font-size: 18px; letter-spacing: 1px; line-height: 25px;\">Siz <u><strong>free.time.uz</strong></u> veb-sahifasiga <b>{firstname} {lastname}</b> tomonidan taklif qilindingiz. </span>\n" +
-                "        </div>\n" +
-                "        <div class=\"site-info\" style=\"font-size: 18px;\">\n" +
-                "            <h3 style=\"margin: 5px 10px;\"><b>Veb-saytga a'zo bo'lish orqali quyidagi imkoniyatlarga ega bo'lasiz:</b></h3>\n" +
-                "            <ul style=\"line-height: 25px; margin: 0 10px;\">\n" +
-                "                <li>Kunlik vazifalarni rejalashtirish;</li>\n" +
-                "                <li>Hodisalar haqida qulay tarzda telegram bot va email orqali bildirishnoma olish;</li>\n" +
-                "                <li>Do'stlar va biznes hamkorlar bilan qulay vaqtda uchrashuv belgilash;</li>\n" +
-                "            </ul>\n" +
-                "            <div class=\"accept\">\n" +
-                "                <a href=\"javascript:void(0);\">Taklifni qabul qilish</a>\n" +
-                "            </div>\n" +
-                "        </div>\n" +
-                "        <div class=\"footer\">\n" +
-                "            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quaerat praesentium assumenda inventore, incidunt quod? Nulla, ipsum.</p>\n" +
-                "        </div>\n" +
-                "    </div>\n" +
-                "</body>\n" +
-                "</html>";
+        String htmlMsg = """
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body{
+                            width: 100%;
+                        }
+                        body,
+                        .container{
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            font-family: 'Times New Roman', Times, serif;
+                            text-align: justify;
+                        }
+                        .accept{
+                            background-color: #eaf2ed;\s
+                            margin: 5px 0 0;
+                            padding: 1rem;
+                            border-top: 1px solid blueviolet;
+                            display: flex;
+                            justify-content: center;
+                        }
+                        a{
+                            text-decoration: none;
+                            background-color: green;
+                            padding: 8px 30px;
+                            border-radius: 13px;
+                            font-size: 20px;
+                            letter-spacing: 2px;
+                            color: white;
+                        }
+                        .footer{
+                            background-color: black;
+                            text-align: justify;
+                            color: white;
+                            padding: 10px;
+                            font-size: 16px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container" style="width: 550px; border-radius: 5px;">
+                        <img src="https://static.vecteezy.com/system/resources/previews/021/480/975/original/you-re-invited-calligraphy-text-with-elegant-golden-frame-hand-drawn-style-lettering-design-for-greeting-cards-and-invitations-vector.jpg" width="540" height="250" style="margin-top: 5px;">
+                        <div class="user" style="background-color: aliceblue; padding: 10px;">
+                            <h2 style="border-top: 1px solid blueviolet; padding-top: 1rem; margin: 0;">Assalomu alaykum</h2><br>
+                            <span style="font-size: 18px; letter-spacing: 1px; line-height: 25px;">Siz <u><strong>free.time.uz</strong></u> veb-sahifasiga <b>{firstname} {lastname}</b> tomonidan taklif qilindingiz. </span>
+                        </div>
+                        <div class="site-info" style="font-size: 18px;">
+                            <h3 style="margin: 5px 10px;"><b>Veb-saytga a'zo bo'lish orqali quyidagi imkoniyatlarga ega bo'lasiz:</b></h3>
+                            <ul style="line-height: 25px; margin: 0 10px;">
+                                <li>Kunlik vazifalarni rejalashtirish;</li>
+                                <li>Hodisalar haqida qulay tarzda telegram bot va email orqali bildirishnoma olish;</li>
+                                <li>Do'stlar va biznes hamkorlar bilan qulay vaqtda uchrashuv belgilash;</li>
+                            </ul>
+                            <div class="accept">
+                                <a href="javascript:void(0);">Taklifni qabul qilish</a>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quaerat praesentium assumenda inventore, incidunt quod? Nulla, ipsum.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>""";
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
@@ -180,17 +181,17 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
     }
 
     @Override
-    public ApiResponse addUserToContactOrGroup(Long userId, Long groupId, boolean save, Users user) {
-//        if (!groupRepository.existsByIdAndCreatedBy(groupId, user.getId()))
-//            return new ApiResponse("Sizda guruhga foydalanuvchi qo'shishga ruxsat yo'q", 403);
+    public ApiResponse addUserToContactOrGroup(String username, Long groupId, boolean save, Users user) {
+        if (!groupRepository.existsByIdAndCreatedBy(groupId, user.getId()))
+            return new ApiResponse("Sizda guruhga foydalanuvchi qo'shishga ruxsat yo'q", 403);
 
-        Optional<Users> usersOptional = userRepository.findById(userId);
+        Optional<Users> usersOptional = userRepository.findByUsername1(username);
         if (usersOptional.isEmpty()) {
-            return new ApiResponse("Fodalanuvchi topilmadi", 404);
+            return new ApiResponse("Foydalanuvchi topilmadi", 404);
         }
-        //  owner   user
-        Optional<Contacts> ownerContact = contactsRepository.findByContactIdAndCreatedBy(userId, user.getId());
-        Optional<Contacts> userContact = contactsRepository.findByContactIdAndCreatedBy(user.getId(), userId);
+
+        Optional<Contacts> ownerContact = contactsRepository.findByContactIdAndCreatedBy(usersOptional.get().getId(), user.getId());
+        Optional<Contacts> userContact = contactsRepository.findByContactIdAndCreatedBy(user.getId(), usersOptional.get().getId());
         if (ownerContact.isEmpty()){
             Contacts contact;
             if (userContact.isPresent()) {
@@ -199,18 +200,12 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
             }
             else {
                 contact = new Contacts();
-                contact.setContactId(userId);
+                contact.setContactId(usersOptional.get().getId());
                 saveContact(groupId, save, contact, true);
             }
             return new ApiResponse("Contact saqlandi", 200);
         }
         return new ApiResponse("Allaqachon contact saqlangan", 409);
-
-//        Contacts contact = new Contacts();
-//        contact.setContact(usersOptional.get());
-//        saveContact(groupId, save, contact);
-
-//        return new ApiResponse("Contact saqlandi", 200);
     }
 
     @Override
@@ -308,7 +303,7 @@ public class UserRestServiceImpl extends AbsGeneral implements UserRestService {
                 groupRepository.deleteById(groupId);
                 return new ApiResponse("Guruh o'chirildi", 200);
             }
-            return new ApiResponse("Sizda guruhni o'chirishga vakolat yo'q", 403);
+            return new ApiResponse("Sizda guruhni o'chirishga ruxsat yo'q", 403);
         }
         return new ApiResponse("Guruh ma'lumotlari topilmadi", 404);
     }

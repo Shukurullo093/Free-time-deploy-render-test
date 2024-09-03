@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AcceptInvitationDto {
-    @NotBlank(message = "The user id is required")
-    private long userId;
+    @NotBlank(message = "The username id is required")
+    private String username;
 
     @NotBlank(message = "The group id is required")
     private long groupId;

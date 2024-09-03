@@ -81,7 +81,7 @@ public class UserRestController {
     @PostMapping("/accept-invitation")
     public ResponseEntity<ApiResponse> addUserToContactOrGroup(@RequestBody AcceptInvitationDto invitationDto,
                                                                 @CurrentUser Users user) {
-        ApiResponse response = userRestService.addUserToContactOrGroup(invitationDto.getUserId(), invitationDto.getGroupId(),
+        ApiResponse response = userRestService.addUserToContactOrGroup(invitationDto.getUsername(), invitationDto.getGroupId(),
                 invitationDto.isSave(), user);
         return ResponseEntity.status(response.getResponseCode()).body(response);
     }

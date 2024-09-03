@@ -30,28 +30,33 @@ public class UserServiceImpl extends AbsGeneral implements UserService {
         List<ContactsDto> contactsDtoList = new ArrayList<>();
         for (Contacts contacts : allByCreatedBy) {
             Users contact;
-            boolean isSender;
+            boolean isSender = false, isSave=false;
+            String groupName = "";
             if (contacts.getCreatedBy().equals(user.getId())) {
-//                contact = contacts.getContactId();
-                isSender = true;
+                Optional<Users> usersOptional = userRepository.findById(contacts.getContactId());
+                if (usersOptional.isPresent()) {
+                    contact = usersOptional.get();
+                    isSender = true;
+                    isSave=contacts.getContactType1() != ContactType.ONLY_GROUP;
+                    groupName = contacts.getGroupId1() != 0 ? groupRepository.findById(contacts.getGroupId1()).get().getName() : null;
+                } else contact = new Users();
             } else {
                 contact = userRepository.findById(contacts.getCreatedBy()).get();
-                isSender = false;
+                groupName = contacts.getGroupId2() != 0 ? groupRepository.findById(contacts.getGroupId2()).get().getName() : null;
+                isSave=contacts.getContactType2() != ContactType.ONLY_GROUP;
             }
 
-//            String avatarLink = contact.getImage() != null ? "localhost:8080/user/avatar/" + contact.getImage().getHashId() : null;
+            String avatarLink = contact.getImage() != null ? "localhost:8080/user/avatar/" + contact.getImage().getHashId() : null;
+
             contactsDtoList.add(new ContactsDto(
-                    0L,
-                    "contact.getFirstName()",
-                    "contact.getLastName()",
-                    "contact.getUsername1()",
-                    "contacts.getGroup() != null ? contacts.getGroup().getName() : null",
-//                    contact.getEmail(),
-//                    contact.getPhone(),
-                    "avatarLink",
-                    getFormattedDate(contacts.getCreatedAt(), "dd/MM/yyyy HH:mm"),
-                    contacts.getContactType1() != ContactType.ONLY_GROUP,
-//                    contacts.getContactType(),
+                    contact.getId(),
+                    contact.getFirstName(),
+                    contact.getLastName(),
+                    contact.getUsername1(),
+                    groupName,
+                    avatarLink,
+                    getFormattedDate(contacts.getCreatedAt(), "dd/MM/yyyy hh:mm"),
+                    isSave,
                     isSender));
         }
         map.put("contactsList", contactsDtoList);
@@ -80,13 +85,13 @@ public class UserServiceImpl extends AbsGeneral implements UserService {
     public Map<String, List<GroupDto>> getGroupsList(Users user) {
         Map<String, List<GroupDto>> map = new HashMap<>();
         List<Group> groupList = groupRepository.findAllByCreatedBy(user.getId());
-        List<GroupDto> groupDtos=new ArrayList<>();
+        List<GroupDto> groupDtos = new ArrayList<>();
         for (Group group : groupList) {
             groupDtos.add(new GroupDto(
                     group.getId(),
                     group.getName(),
                     group.getCategory(),
-                    0,
+                    contactsRepository.countAllByGroupId1OrGroupId2(group.getId(), group.getId()),
                     getFormattedDate(group.getCreatedAt(), "dd/MM/yyyy")
             ));
         }
